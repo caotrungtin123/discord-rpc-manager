@@ -90,6 +90,13 @@ function Landing() {
           <div className="mx-auto mt-4 flex max-w-lg items-center gap-3 rounded-lg border border-border bg-card/70 px-4 py-3 backdrop-blur-xl">
             <Layers3 className="size-5 shrink-0 text-primary" /><div><p className="text-xs font-semibold">Đổi mẫu linh hoạt</p><p className="text-[11px] text-muted-foreground">Đồng bộ hoặc riêng từng tài khoản</p></div>
           </div>
+          <div className="mx-auto mt-4 max-w-lg overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl">
+            <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+              <p className="text-xs font-semibold">Treo voice 24/7</p>
+              <span className="rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">Ví dụ</span>
+            </div>
+            <img src={treoVoiceSample} alt="Ví dụ treo voice — tài khoản Binix trong server bin sì to" loading="lazy" width={1024} height={640} className="block w-full" />
+          </div>
         </div>
 
       </section>
