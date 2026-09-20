@@ -12,4 +12,4 @@
 - [x] Add owner-only user administration with Discord ID search
 - [x] Keep original Discord tokens hidden from owner screens
 - [x] Make the runner obey each user's RPC run/stop control
-- [ ] Verify owner administration on desktop and mobile
+- [x] Verify owner administration on desktop and mobile
