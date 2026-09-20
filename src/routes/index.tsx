@@ -66,10 +66,10 @@ function Landing() {
             <Sparkles className="size-3.5" /> Trình chỉnh RPC trực quan
           </div>
           <h1 className="max-w-2xl font-display text-5xl font-semibold leading-[1.02] sm:text-6xl lg:text-7xl">
-            Hiện diện theo <span className="text-primary">cách của bạn.</span>
+            Binix
           </h1>
           <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-            Chỉnh Discord Rich Presence ngay trên web, xem kết quả tức thì và đồng bộ tới nhiều tài khoản mà không cần sửa từng file.
+            Chỉnh sửa RPC và giữ Discord bạn online 24/24.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button size="lg" disabled={checking} onClick={() => { window.location.href = "/api/public/auth/discord/start"; }}>
