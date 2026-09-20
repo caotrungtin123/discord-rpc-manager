@@ -10,33 +10,111 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as ApiPublicRunnerConfigRouteImport } from './routes/api/public/runner/config'
+import { Route as ApiPublicAuthDiscordCallbackRouteImport } from './routes/api/public/auth/discord/callback'
+import { Route as ApiPublicAuthDiscordStartRouteImport } from './routes/api/public/auth/discord/start'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicRunnerConfigRoute = ApiPublicRunnerConfigRouteImport.update({
+  id: '/api/public/runner/config',
+  path: '/api/public/runner/config',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicAuthDiscordCallbackRoute =
+  ApiPublicAuthDiscordCallbackRouteImport.update({
+    id: '/api/public/auth/discord/callback',
+    path: '/api/public/auth/discord/callback',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicAuthDiscordStartRoute =
+  ApiPublicAuthDiscordStartRouteImport.update({
+    id: '/api/public/auth/discord/start',
+    path: '/api/public/auth/discord/start',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
+  '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
+  '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
+  '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
+  '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
+  '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
+  '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/auth/callback'
+    | '/api/public/runner/config'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/start'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/auth/callback'
+    | '/api/public/runner/config'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/start'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/_authenticated/dashboard'
+    | '/auth/callback'
+    | '/api/public/runner/config'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/start'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  ApiPublicRunnerConfigRoute: typeof ApiPublicRunnerConfigRoute
+  ApiPublicAuthDiscordCallbackRoute: typeof ApiPublicAuthDiscordCallbackRoute
+  ApiPublicAuthDiscordStartRoute: typeof ApiPublicAuthDiscordStartRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +126,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/runner/config': {
+      id: '/api/public/runner/config'
+      path: '/api/public/runner/config'
+      fullPath: '/api/public/runner/config'
+      preLoaderRoute: typeof ApiPublicRunnerConfigRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/auth/discord/callback': {
+      id: '/api/public/auth/discord/callback'
+      path: '/api/public/auth/discord/callback'
+      fullPath: '/api/public/auth/discord/callback'
+      preLoaderRoute: typeof ApiPublicAuthDiscordCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/auth/discord/start': {
+      id: '/api/public/auth/discord/start'
+      path: '/api/public/auth/discord/start'
+      fullPath: '/api/public/auth/discord/start'
+      preLoaderRoute: typeof ApiPublicAuthDiscordStartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthCallbackRoute: AuthCallbackRoute,
+  ApiPublicRunnerConfigRoute: ApiPublicRunnerConfigRoute,
+  ApiPublicAuthDiscordCallbackRoute: ApiPublicAuthDiscordCallbackRoute,
+  ApiPublicAuthDiscordStartRoute: ApiPublicAuthDiscordStartRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
