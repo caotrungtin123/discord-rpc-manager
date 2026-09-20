@@ -59,7 +59,10 @@ export const updateVoiceSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => updateSchema.parse(input))
   .handler(async ({ data, context }) => {
-    const { id, ...patch } = data;
+    const { id, ...rest } = data;
+    const patch = Object.fromEntries(
+      Object.entries(rest).filter(([, v]) => v !== undefined),
+    ) as Record<string, unknown>;
     const { data: row, error } = await context.supabase
       .from("voice_sessions")
       .update(patch)
