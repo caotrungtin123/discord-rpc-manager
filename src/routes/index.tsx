@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, Layers3, Radio, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Layers3, Radio, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { RpcPreview } from "@/components/RpcPreview";
 import { Button } from "@/components/ui/button";
