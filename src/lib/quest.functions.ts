@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 
 const JOB_SELECT =
   "id, token_id, label, auto_run, scan_requested, run_requested, status, last_scan_at, last_run_at";
@@ -70,7 +71,7 @@ export const updateQuestJob = createServerFn({ method: "POST" })
     const { id, ...rest } = data;
     const patch = Object.fromEntries(
       Object.entries(rest).filter(([, v]) => v !== undefined),
-    ) as Record<string, unknown>;
+    ) as TablesUpdate<"quest_jobs">;
     const { data: row, error } = await context.supabase
       .from("quest_jobs")
       .update(patch)

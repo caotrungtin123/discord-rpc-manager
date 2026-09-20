@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 
 const SELECT =
   "id, token_id, label, guild_id, channel_id, mic_enabled, camera_enabled, screen_share_enabled, running, status, last_seen_at";
@@ -62,7 +63,7 @@ export const updateVoiceSession = createServerFn({ method: "POST" })
     const { id, ...rest } = data;
     const patch = Object.fromEntries(
       Object.entries(rest).filter(([, v]) => v !== undefined),
-    ) as Record<string, unknown>;
+    ) as TablesUpdate<"voice_sessions">;
     const { data: row, error } = await context.supabase
       .from("voice_sessions")
       .update(patch)
