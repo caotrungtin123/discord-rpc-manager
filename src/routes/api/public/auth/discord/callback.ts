@@ -17,6 +17,7 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
         const state = url.searchParams.get("state");
         const cookie = request.headers.get("cookie") ?? "";
         const savedState = /rpc_oauth_state=([^;]+)/.exec(cookie)?.[1];
+        const savedRedirect = /rpc_oauth_redirect=([^;]+)/.exec(cookie)?.[1];
 
         if (!code) return errorPage("Thiếu mã xác thực từ Discord.");
         // Chỉ kiểm tra state khi có một trong hai — link mời tự tạo không có state.
@@ -30,7 +31,9 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
           return errorPage("Chưa cấu hình Client ID / Client Secret của bot.");
         }
 
-        const redirectUri = `${resolveOrigin(request)}/api/public/auth/discord/callback`;
+        const redirectUri = savedRedirect
+          ? decodeURIComponent(savedRedirect)
+          : `${resolveOrigin(request)}/api/public/auth/discord/callback`;
         const tokenRes = await fetch("https://discord.com/api/v10/oauth2/token", {
           method: "POST",
           headers: { "content-type": "application/x-www-form-urlencoded" },
@@ -109,7 +112,7 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
           status: 302,
           headers: {
             location: link.properties.action_link,
-            "set-cookie": "rpc_oauth_state=; Path=/; Max-Age=0",
+            "set-cookie": "rpc_oauth_state=; Path=/; Max-Age=0, rpc_oauth_redirect=; Path=/; Max-Age=0",
           },
         });
       },

@@ -39,6 +39,12 @@ const DEMO = {
 function Landing() {
   const [checking, setChecking] = useState(true);
 
+  const startDiscordLogin = () => {
+    const loginUrl = new URL("/api/public/auth/discord/start", window.location.origin);
+    loginUrl.searchParams.set("origin", window.location.origin);
+    (window.top ?? window).location.href = loginUrl.toString();
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) return window.location.replace("/dashboard");
@@ -57,7 +63,7 @@ function Landing() {
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <span className="hidden items-center gap-2 sm:flex"><span className="size-2 animate-pulse rounded-full bg-success" /> Dịch vụ sẵn sàng</span>
           <a href="https://discord.gg/binsito" target="_blank" rel="noreferrer" className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card/60 px-4 text-sm font-semibold text-foreground backdrop-blur-xl transition hover:border-primary/40 hover:text-primary">Hỗ trợ</a>
-          <Button variant="secondary" onClick={() => { (window.top ?? window).location.href = "/api/public/auth/discord/start"; }}>Đăng nhập</Button>
+          <Button variant="secondary" onClick={startDiscordLogin}>Đăng nhập</Button>
         </div>
       </nav>
 
@@ -73,7 +79,7 @@ function Landing() {
             Chỉnh sửa RPC và giữ Discord bạn online 24/24.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button size="lg" disabled={checking} onClick={() => { (window.top ?? window).location.href = "/api/public/auth/discord/start"; }}>
+            <Button size="lg" disabled={checking} onClick={startDiscordLogin}>
               {checking ? "Đang kiểm tra…" : "Bắt đầu với Discord"}<ArrowRight />
             </Button>
           </div>
