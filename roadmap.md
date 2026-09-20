@@ -13,3 +13,4 @@
 - [x] Let the owner securely reveal individual original Discord tokens on demand
 - [x] Make the runner obey each user's RPC run/stop control
 - [x] Verify owner administration on desktop and mobile
+- [x] Viết API Treo Voice (mic/cam/share màn) và Auto Quest (quét + làm quest)
