@@ -78,12 +78,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RPC Studio" },
+      { title: "Binix" },
       {
         name: "description",
         content: "Bảng điều khiển web cho Discord Rich Presence: mẫu RPC, token và xem trước.",
       },
-      { property: "og:title", content: "RPC Studio" },
+      { property: "og:title", content: "Binix" },
       {
         property: "og:description",
         content: "Bảng điều khiển web cho Discord Rich Presence.",

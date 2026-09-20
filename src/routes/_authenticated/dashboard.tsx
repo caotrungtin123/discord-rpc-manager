@@ -21,12 +21,12 @@ import {
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Bảng điều khiển · RPC Studio" },
+      { title: "Bảng điều khiển · Binix" },
       {
         name: "description",
         content: "Quản lý mẫu RPC, token và chế độ đồng bộ cho Discord Rich Presence.",
       },
-      { property: "og:title", content: "Bảng điều khiển · RPC Studio" },
+      { property: "og:title", content: "Bảng điều khiển · Binix" },
       { property: "og:description", content: "Quản lý mẫu RPC và token Discord của bạn." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -564,7 +564,7 @@ function Dashboard() {
         </aside>
       </main>
       <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 border-t border-border px-5 py-5 text-xs text-muted-foreground sm:flex-row md:px-8">
-        <p>© {new Date().getFullYear()} RPC Studio</p>
+        <p>© {new Date().getFullYear()} Binix</p>
         <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
       </footer>
     </div>
