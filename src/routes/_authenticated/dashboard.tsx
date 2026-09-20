@@ -262,16 +262,26 @@ function Dashboard() {
               <p className="text-xs text-muted-foreground">Bảng điều khiển RPC</p>
             </div>
           </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              window.location.href = "/";
-            }}
-          >
-            Đăng xuất
-          </Button>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://discord.gg/P43rvQEQX"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card/60 px-3.5 text-sm font-semibold text-foreground backdrop-blur-xl transition hover:border-primary/40 hover:text-primary"
+            >
+              Hỗ trợ
+            </a>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                window.location.href = "/";
+              }}
+            >
+              Đăng xuất
+            </Button>
+          </div>
         </div>
       </header>
 
