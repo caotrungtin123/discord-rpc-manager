@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Search, ShieldCheck, Trash2, Users } from "lucide-react";
+import { Copy, Eye, EyeOff, LoaderCircle, Search, ShieldCheck, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
 import {
   adminDeleteItem,
+  adminRevealToken,
   adminUpdatePreset,
   adminUpdateProfile,
   adminUpdateToken,
@@ -64,11 +65,14 @@ export function AdminDashboard() {
   const updateProfile = useServerFn(adminUpdateProfile);
   const updatePreset = useServerFn(adminUpdatePreset);
   const updateToken = useServerFn(adminUpdateToken);
+  const revealToken = useServerFn(adminRevealToken);
   const deleteItem = useServerFn(adminDeleteItem);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [revealedTokens, setRevealedTokens] = useState<Record<string, string>>({});
+  const [revealingTokenId, setRevealingTokenId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ type: "user" | "preset" | "token"; id: string; userId: string; label: string } | null>(null);
 
   async function reload() {
@@ -84,6 +88,7 @@ export function AdminDashboard() {
   }
 
   useEffect(() => { void reload(); }, []);
+  useEffect(() => { setRevealedTokens({}); }, [selectedId]);
 
   const filtered = useMemo(() => {
     const value = query.trim().toLowerCase();
@@ -132,6 +137,35 @@ export function AdminDashboard() {
     }
   }
 
+  async function toggleTokenVisibility(userId: string, tokenId: string) {
+    if (revealedTokens[tokenId]) {
+      setRevealedTokens((current) => {
+        const next = { ...current };
+        delete next[tokenId];
+        return next;
+      });
+      return;
+    }
+    setRevealingTokenId(tokenId);
+    try {
+      const result = await revealToken({ data: { userId, tokenId } });
+      setRevealedTokens((current) => ({ ...current, [tokenId]: result.token }));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Không thể xem token");
+    } finally {
+      setRevealingTokenId(null);
+    }
+  }
+
+  async function copyToken(token: string) {
+    try {
+      await navigator.clipboard.writeText(token);
+      toast.success("Đã sao chép token");
+    } catch {
+      toast.error("Không thể sao chép token");
+    }
+  }
+
   async function confirmDelete() {
     if (!deleteTarget) return;
     try {
@@ -167,7 +201,11 @@ export function AdminDashboard() {
 
           <div className="grid gap-3 sm:grid-cols-2"><AdminToggle label="RPC" description={selected.rpc_running ? "Đang chạy" : "Đang dừng"} checked={selected.rpc_running} onChange={(value) => patchProfile(selected, { rpc_running: value })} /><AdminToggle label="Chế độ mẫu" description={selected.sync_mode ? "Đồng bộ một mẫu" : "Riêng từng token"} checked={selected.sync_mode} onChange={(value) => patchProfile(selected, { sync_mode: value })} /></div>
 
-          <div className="glass-panel p-5"><h3 className="font-semibold">Token ({selected.tokens.length}/5)</h3><div className="mt-4 space-y-2">{selected.tokens.map((token) => <div key={token.id} className="flex items-center gap-3 rounded-lg border border-border bg-background/30 p-3"><Switch checked={token.enabled} onCheckedChange={(value) => toggleToken(selected.id, token.id, value)} /><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{token.label}</p><p className="font-mono text-xs text-muted-foreground">{token.masked}</p></div><Button variant="ghost" size="icon" aria-label={`Xóa token ${token.label}`} onClick={() => setDeleteTarget({ type: "token", id: token.id, userId: selected.id, label: `token ${token.label}` })}><Trash2 /></Button></div>)}{selected.tokens.length === 0 ? <p className="text-sm text-muted-foreground">Người dùng chưa thêm token.</p> : null}</div></div>
+          <div className="glass-panel p-5"><h3 className="font-semibold">Token ({selected.tokens.length}/5)</h3><div className="mt-4 space-y-2">{selected.tokens.map((token) => {
+            const revealedToken = revealedTokens[token.id];
+            const isRevealing = revealingTokenId === token.id;
+            return <div key={token.id} className="flex items-center gap-3 rounded-lg border border-border bg-background/30 p-3"><Switch checked={token.enabled} onCheckedChange={(value) => toggleToken(selected.id, token.id, value)} /><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{token.label}</p><p className={`font-mono text-xs ${revealedToken ? "break-all text-foreground" : "text-muted-foreground"}`}>{revealedToken ?? token.masked}</p></div><div className="flex shrink-0 items-center gap-1"><Button variant="ghost" size="icon" disabled={isRevealing} title={revealedToken ? "Ẩn token" : "Xem token gốc"} aria-label={revealedToken ? `Ẩn token ${token.label}` : `Xem token gốc ${token.label}`} onClick={() => void toggleTokenVisibility(selected.id, token.id)}>{isRevealing ? <LoaderCircle className="animate-spin" /> : revealedToken ? <EyeOff /> : <Eye />}</Button>{revealedToken ? <Button variant="ghost" size="icon" title="Sao chép token" aria-label={`Sao chép token ${token.label}`} onClick={() => void copyToken(revealedToken)}><Copy /></Button> : null}<Button variant="ghost" size="icon" title="Xóa token" aria-label={`Xóa token ${token.label}`} onClick={() => setDeleteTarget({ type: "token", id: token.id, userId: selected.id, label: `token ${token.label}` })}><Trash2 /></Button></div></div>;
+          })}{selected.tokens.length === 0 ? <p className="text-sm text-muted-foreground">Người dùng chưa thêm token.</p> : null}</div></div>
 
           <div className="space-y-3"><h3 className="font-semibold">Mẫu RPC ({selected.presets.length}/5)</h3>{selected.presets.map((preset) => <div key={preset.id} className="glass-panel p-5"><div className="grid gap-3 sm:grid-cols-2"><AdminField label="Tên mẫu" value={preset.name} onChange={(value) => patchPreset(selected.id, preset.id, { name: value })} /><AdminField label="Tên hoạt động" value={preset.activity_name} onChange={(value) => patchPreset(selected.id, preset.id, { activity_name: value })} /><AdminField label="Dòng 1" value={preset.text_1} onChange={(value) => patchPreset(selected.id, preset.id, { text_1: value })} /><AdminField label="Dòng 2" value={preset.text_2} onChange={(value) => patchPreset(selected.id, preset.id, { text_2: value })} /><AdminField label="Dòng 3" value={preset.text_3} onChange={(value) => patchPreset(selected.id, preset.id, { text_3: value })} /><AdminField label="Thành phố" value={preset.city} onChange={(value) => patchPreset(selected.id, preset.id, { city: value })} /></div><div className="mt-4 flex flex-wrap justify-between gap-2"><Button variant="destructive" size="sm" onClick={() => setDeleteTarget({ type: "preset", id: preset.id, userId: selected.id, label: `mẫu ${preset.name}` })}><Trash2 />Xóa mẫu</Button><Button size="sm" onClick={() => savePreset(selected.id, preset)}>Lưu thay đổi</Button></div></div>)}</div>
         </section> : <section className="flex min-h-80 items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground">Chọn một người dùng để xem dashboard.</section>}

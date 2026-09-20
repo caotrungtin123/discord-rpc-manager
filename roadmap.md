@@ -10,6 +10,6 @@
 - [x] Add a per-user RPC run control for the hosted runner workflow
 - [x] Verify the redesigned dashboard and RPC controls on desktop and mobile
 - [x] Add owner-only user administration with Discord ID search
-- [x] Keep original Discord tokens hidden from owner screens
+- [x] Let the owner securely reveal individual original Discord tokens on demand
 - [x] Make the runner obey each user's RPC run/stop control
 - [x] Verify owner administration on desktop and mobile
