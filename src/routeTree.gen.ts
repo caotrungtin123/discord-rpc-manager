@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicRunnerConfigRouteImport } from './routes/api/public/runner/config'
 import { Route as ApiPublicAuthDiscordCallbackRouteImport } from './routes/api/public/auth/discord/callback'
 import { Route as ApiPublicAuthDiscordStartRouteImport } from './routes/api/public/auth/discord/start'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicRunnerConfigRoute = ApiPublicRunnerConfigRouteImport.update({
+  id: '/api/public/runner/config',
+  path: '/api/public/runner/config',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicAuthDiscordCallbackRoute =
@@ -33,36 +39,47 @@ const ApiPublicAuthDiscordStartRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
   '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
   '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
   '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/api/public/auth/discord/callback' | '/api/public/auth/discord/start'
+    | '/'
+    | '/api/public/runner/config'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/start'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/api/public/auth/discord/callback' | '/api/public/auth/discord/start'
+    | '/'
+    | '/api/public/runner/config'
+    | '/api/public/auth/discord/callback'
+    | '/api/public/auth/discord/start'
   id:
     | '__root__'
     | '/'
+    | '/api/public/runner/config'
     | '/api/public/auth/discord/callback'
     | '/api/public/auth/discord/start'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicRunnerConfigRoute: typeof ApiPublicRunnerConfigRoute
   ApiPublicAuthDiscordCallbackRoute: typeof ApiPublicAuthDiscordCallbackRoute
   ApiPublicAuthDiscordStartRoute: typeof ApiPublicAuthDiscordStartRoute
 }
@@ -74,6 +91,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/runner/config': {
+      id: '/api/public/runner/config'
+      path: '/api/public/runner/config'
+      fullPath: '/api/public/runner/config'
+      preLoaderRoute: typeof ApiPublicRunnerConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/auth/discord/callback': {
@@ -95,6 +119,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicRunnerConfigRoute: ApiPublicRunnerConfigRoute,
   ApiPublicAuthDiscordCallbackRoute: ApiPublicAuthDiscordCallbackRoute,
   ApiPublicAuthDiscordStartRoute: ApiPublicAuthDiscordStartRoute,
 }
