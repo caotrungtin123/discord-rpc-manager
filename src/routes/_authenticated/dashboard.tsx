@@ -15,7 +15,6 @@ import {
   Plus,
   Radio,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { addToken, regenerateRunnerKey } from "@/lib/rpc.functions";
@@ -343,6 +342,13 @@ function Dashboard() {
         />
       ) : (
       <main className="mx-auto grid max-w-[1440px] gap-6 px-4 py-6 md:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:py-8">
+        <div className="flex flex-wrap items-start justify-between gap-4 lg:col-span-2">
+          <div>
+            <h1 className="text-3xl font-semibold">Rich Presence</h1>
+            <p className="mt-2 text-sm text-muted-foreground">Thiết lập Rich Presence tùy chỉnh 24/7 cho từng tài khoản Discord.</p>
+          </div>
+          <Button onClick={() => toast.info("Thêm token Discord tại khu vực Token bên dưới.")}><Plus />Thêm tài khoản</Button>
+        </div>
         <div className="space-y-5">
           {/* Mẫu RPC */}
           <section className="glass-panel animate-rise-in p-5 sm:p-6">
@@ -675,23 +681,23 @@ function Overview({
 }) {
   const stats = [
     { label: "RPC", value: rpcCount, detail: "đang chạy", icon: Activity, tone: "text-primary" },
-    { label: "Voice", value: 0, detail: "đang chạy", icon: Headphones, tone: "text-indigo-400" },
-    { label: "Status", value: 0, detail: "đang chạy", icon: CircleDot, tone: "text-amber-400" },
-    { label: "Auto Quest", value: 0, detail: "đang chạy", icon: CheckCircle2, tone: "text-emerald-400" },
+    { label: "Voice", value: 0, detail: "đang chạy", icon: Headphones, tone: "text-voice" },
+    { label: "Status", value: 0, detail: "đang chạy", icon: CircleDot, tone: "text-status" },
+    { label: "Auto Quest", value: 0, detail: "đang chạy", icon: CheckCircle2, tone: "text-quest" },
     { label: "Online lâu nhất", value: "—", detail: "0 phiên", icon: Clock3, tone: "text-muted-foreground" },
     { label: "Gói hiện tại", value: "Free", detail: "Gói miễn phí", icon: ShieldCheck, tone: "text-foreground" },
   ];
   const shortcuts: Array<{ label: string; view: DashboardView; icon: React.ComponentType<{ className?: string }>; tone: string }> = [
     { label: "Rich Presence", view: "rpc", icon: Activity, tone: "text-primary" },
-    { label: "Treo Voice", view: "voice", icon: Headphones, tone: "text-indigo-400" },
-    { label: "Status", view: "status", icon: CircleDot, tone: "text-amber-400" },
-    { label: "Auto Quest", view: "quest", icon: CheckCircle2, tone: "text-emerald-400" },
+    { label: "Treo Voice", view: "voice", icon: Headphones, tone: "text-voice" },
+    { label: "Status", view: "status", icon: CircleDot, tone: "text-status" },
+    { label: "Auto Quest", view: "quest", icon: CheckCircle2, tone: "text-quest" },
   ];
 
   return (
     <main className="mx-auto max-w-[1440px] px-4 py-8 md:px-8">
       <div className="mb-7">
-        <h1 className="text-3xl font-semibold">Chào mừng trở lại, {username} <span aria-hidden="true">👋</span></h1>
+        <h1 className="text-3xl font-semibold">Chào mừng trở lại, {username}</h1>
         <p className="mt-2 text-sm text-muted-foreground">Theo dõi tất cả các phiên Discord đang hoạt động của bạn dưới đây.</p>
       </div>
 
