@@ -99,7 +99,7 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
         const { data: link, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
           type: "magiclink",
           email,
-          options: { redirectTo: `${url.origin}/auth/callback` },
+          options: { redirectTo: `${resolveOrigin(request)}/auth/callback` },
         });
         if (linkError || !link?.properties?.action_link) {
           return errorPage("Không tạo được phiên đăng nhập.");
