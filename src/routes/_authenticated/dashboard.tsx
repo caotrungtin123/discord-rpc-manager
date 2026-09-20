@@ -73,6 +73,7 @@ type Preset = {
   elapsed: number;
   spoof_device: boolean;
   city: string;
+  city_enabled: boolean;
   position: number;
 };
 
@@ -141,9 +142,11 @@ function Dashboard() {
         .insert({
           user_id: uid,
           name: "Mẫu 1",
-          activity_name: "Sleep",
-          text_2: "🌡️ {temp:c} °C | 🍃 {wind:kph} km/h",
-          text_3: "⏱ {uptime:days}d {uptime:hours}h {uptime:minutes}m",
+          activity_name: "",
+          text_2: "",
+          text_3: "",
+          city: "",
+          city_enabled: false,
           position: 0,
         })
         .select("*");
@@ -387,6 +390,7 @@ function Dashboard() {
               <Field label="Tên hoạt động">
                 <Input
                   value={current.activity_name}
+                  placeholder="Nhập tên hoạt động"
                   onChange={(e) => patchCurrent({ activity_name: e.target.value })}
                 />
               </Field>
@@ -394,14 +398,23 @@ function Dashboard() {
                 <Input value={current.text_1} onChange={(e) => patchCurrent({ text_1: e.target.value })} />
               </Field>
               <Field label="Dòng 2">
-                <Input value={current.text_2} onChange={(e) => patchCurrent({ text_2: e.target.value })} />
+                <Input placeholder="Nhập nội dung dòng 2" value={current.text_2} onChange={(e) => patchCurrent({ text_2: e.target.value })} />
               </Field>
               <Field label="Dòng 3">
-                <Input value={current.text_3} onChange={(e) => patchCurrent({ text_3: e.target.value })} />
+                <Input placeholder="Nhập nội dung dòng 3" value={current.text_3} onChange={(e) => patchCurrent({ text_3: e.target.value })} />
               </Field>
-              <Field label="Thành phố (thời tiết)">
-                <Input value={current.city} onChange={(e) => patchCurrent({ city: e.target.value })} />
-              </Field>
+              <div className="space-y-2">
+                <div className="flex min-h-5 items-center justify-between gap-3">
+                  <Label htmlFor="city-enabled" className="text-xs font-medium text-muted-foreground">Thành phố (thời tiết)</Label>
+                  <Switch id="city-enabled" checked={current.city_enabled} onCheckedChange={(value) => patchCurrent({ city_enabled: value })} />
+                </div>
+                <Input
+                  value={current.city}
+                  disabled={!current.city_enabled}
+                  placeholder={current.city_enabled ? "Nhập tên thành phố" : "Đã tắt"}
+                  onChange={(e) => patchCurrent({ city: e.target.value })}
+                />
+              </div>
               <Field label="Ảnh lớn (URL)">
                 <Input value={current.big_img} onChange={(e) => patchCurrent({ big_img: e.target.value })} />
               </Field>

@@ -18,6 +18,7 @@ type PresetRow = {
   elapsed: number;
   spoof_device: boolean;
   city: string;
+  city_enabled: boolean;
 };
 
 function presetPayload(p: PresetRow) {
@@ -38,7 +39,8 @@ function presetPayload(p: PresetRow) {
       elapsed: p.elapsed,
       spoof_device: p.spoof_device,
     },
-    city: p.city,
+    city: p.city_enabled ? p.city : "",
+    city_enabled: p.city_enabled,
   };
 }
 
