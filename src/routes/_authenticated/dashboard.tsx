@@ -563,6 +563,10 @@ function Dashboard() {
           />
         </aside>
       </main>
+      <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 border-t border-border px-5 py-5 text-xs text-muted-foreground sm:flex-row md:px-8">
+        <p>© {new Date().getFullYear()} RPC Studio</p>
+        <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
+      </footer>
     </div>
   );
 }
