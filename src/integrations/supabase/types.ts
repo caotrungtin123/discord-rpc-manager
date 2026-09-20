@@ -23,6 +23,7 @@ export type Database = {
           button_2_name: string
           button_2_url: string
           city: string
+          city_enabled: boolean
           created_at: string
           duration: number
           elapsed: number
@@ -46,6 +47,7 @@ export type Database = {
           button_2_name?: string
           button_2_url?: string
           city?: string
+          city_enabled?: boolean
           created_at?: string
           duration?: number
           elapsed?: number
@@ -69,6 +71,7 @@ export type Database = {
           button_2_name?: string
           button_2_url?: string
           city?: string
+          city_enabled?: boolean
           created_at?: string
           duration?: number
           elapsed?: number

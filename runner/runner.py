@@ -45,7 +45,7 @@ def fetch_config(api_url, key):
 def to_rpc_config(entry_config):
     """Đổi dữ liệu từ web sang đúng định dạng mà RpcClient mong đợi."""
     cfg = {
-        "name": [entry_config.get("name") or "Sleep"],
+        "name": [entry_config.get("name") or ""],
         "platform": entry_config.get("platform") or "",
         "text-1": [entry_config.get("text-1") or ""],
         "text-2": [entry_config.get("text-2") or ""],
@@ -58,7 +58,13 @@ def to_rpc_config(entry_config):
     for key in ("button-1", "button-2"):
         btn = entry_config.get(key)
         cfg[key] = [btn] if btn else []
-    return {"setup": {"city": entry_config.get("city") or "default"}, "config": cfg}
+    return {
+        "setup": {
+            "city": entry_config.get("city") or "",
+            "city_enabled": bool(entry_config.get("city_enabled")),
+        },
+        "config": cfg,
+    }
 
 
 class TokenWorker:
