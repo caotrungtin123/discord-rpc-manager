@@ -100,6 +100,38 @@ export const adminUpdateToken = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminRevealToken = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({
+    userId: z.string().uuid(),
+    tokenId: z.string().uuid(),
+  }).parse(input))
+  .handler(async ({ data, context }) => {
+    await requireOwner(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: token, error: tokenError } = await supabaseAdmin
+      .from("tokens")
+      .select("id")
+      .eq("id", data.tokenId)
+      .eq("user_id", data.userId)
+      .maybeSingle();
+    if (tokenError || !token) throw new Error("Không tìm thấy token của người dùng này");
+
+    const { data: secret, error: secretError } = await supabaseAdmin
+      .from("token_secrets")
+      .select("ciphertext")
+      .eq("token_id", token.id)
+      .maybeSingle();
+    if (secretError || !secret) throw new Error("Không tìm thấy dữ liệu token");
+
+    const { decryptToken } = await import("@/lib/crypto.server");
+    try {
+      return { token: await decryptToken(secret.ciphertext) };
+    } catch {
+      throw new Error("Không thể giải mã token");
+    }
+  });
+
 export const adminDeleteItem = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.discriminatedUnion("type", [
