@@ -96,6 +96,13 @@ function Landing() {
           </div>
         </div>
       </section>
+
+      <footer className="relative z-10 mx-auto max-w-7xl border-t border-border px-5 py-6 md:px-8">
+        <div className="flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
+          <p>© {new Date().getFullYear()} RPC Studio</p>
+          <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
+        </div>
+      </footer>
     </main>
   );
 }
