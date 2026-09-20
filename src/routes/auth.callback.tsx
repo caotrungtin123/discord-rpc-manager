@@ -6,10 +6,10 @@ export const Route = createFileRoute("/auth/callback")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Đang đăng nhập · RPC Studio" },
-      { name: "description", content: "Hoàn tất đăng nhập Discord cho RPC Studio." },
-      { property: "og:title", content: "Đang đăng nhập · RPC Studio" },
-      { property: "og:description", content: "Hoàn tất đăng nhập Discord cho RPC Studio." },
+      { title: "Đang đăng nhập · Binix" },
+      { name: "description", content: "Hoàn tất đăng nhập Discord cho Binix." },
+      { property: "og:title", content: "Đang đăng nhập · Binix" },
+      { property: "og:description", content: "Hoàn tất đăng nhập Discord cho Binix." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "RPC Studio · Tạo Discord Rich Presence của riêng bạn" },
+      { title: "Binix · Tạo Discord Rich Presence của riêng bạn" },
       { name: "description", content: "Tạo, xem trước và quản lý Discord Rich Presence ngay trên web với tối đa 5 mẫu và 5 tài khoản." },
-      { property: "og:title", content: "RPC Studio · Tạo Discord Rich Presence của riêng bạn" },
+      { property: "og:title", content: "Binix · Tạo Discord Rich Presence của riêng bạn" },
       { property: "og:description", content: "Studio trực quan để chỉnh và đồng bộ Discord Rich Presence." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -51,7 +51,7 @@ function Landing() {
       <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-6 md:px-8">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/30"><Radio className="size-5 text-primary-foreground" /></div>
-          <span className="font-display text-lg font-semibold">RPC Studio</span>
+          <span className="font-display text-lg font-semibold">Binix</span>
         </div>
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <span className="hidden items-center gap-2 sm:flex"><span className="size-2 animate-pulse rounded-full bg-success" /> Dịch vụ sẵn sàng</span>
@@ -94,7 +94,7 @@ function Landing() {
 
       <footer className="relative z-10 mx-auto max-w-7xl border-t border-border px-5 py-6 md:px-8">
         <div className="flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} RPC Studio</p>
+          <p>© {new Date().getFullYear()} Binix</p>
           <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
         </div>
       </footer>
