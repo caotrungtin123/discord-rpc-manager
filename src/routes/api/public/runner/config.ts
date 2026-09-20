@@ -57,7 +57,7 @@ export const Route = createFileRoute("/api/public/runner/config")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { data: profile } = await supabaseAdmin
           .from("profiles")
-          .select("id, username, sync_mode, active_preset_id")
+          .select("id, username, sync_mode, active_preset_id, rpc_running")
           .eq("runner_key", key)
           .maybeSingle();
         if (!profile) return Response.json({ error: "invalid runner key" }, { status: 401 });
@@ -75,7 +75,8 @@ export const Route = createFileRoute("/api/public/runner/config")({
           .eq("enabled", true)
           .order("position", { ascending: true });
 
-        const ids = (tokens ?? []).map((t) => t.id);
+        const runnableTokens = profile.rpc_running ? (tokens ?? []) : [];
+        const ids = runnableTokens.map((t) => t.id);
         const { data: secrets } = ids.length
           ? await supabaseAdmin.from("token_secrets").select("token_id, ciphertext").in("token_id", ids)
           : { data: [] as { token_id: string; ciphertext: string }[] };
@@ -88,10 +89,11 @@ export const Route = createFileRoute("/api/public/runner/config")({
         const out: {
           account: string | null;
           sync_mode: boolean;
+          running: boolean;
           tokens: { label: string; token: string; config: ReturnType<typeof presetPayload> }[];
-        } = { account: profile.username, sync_mode: profile.sync_mode, tokens: [] };
+        } = { account: profile.username, sync_mode: profile.sync_mode, running: profile.rpc_running, tokens: [] };
 
-        for (const token of tokens ?? []) {
+        for (const token of runnableTokens) {
           const cipher = (secrets ?? []).find((s) => s.token_id === token.id)?.ciphertext;
           if (!cipher) continue;
           const preset = profile.sync_mode
