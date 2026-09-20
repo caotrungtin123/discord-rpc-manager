@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   Activity,
-  Bot,
   CheckCircle2,
   CircleDot,
   Gamepad2,
@@ -716,10 +715,6 @@ function FeatureEmpty({
         <Icon className="size-9 text-primary/65" />
         <p className="mt-4 text-sm font-medium">Chưa có tài khoản {itemName} nào trong nhóm này</p>
         <p className="mt-2 text-xs text-muted-foreground">Nhấn “Thêm tài khoản” để bắt đầu.</p>
-      </div>
-      <div className="mx-auto flex max-w-md items-center gap-3 rounded-lg border border-border bg-card/55 p-4 text-sm text-muted-foreground">
-        <Bot className="size-5 shrink-0 text-primary" />
-        <p><span className="font-semibold text-foreground">Khung giao diện đã sẵn sàng.</span> Phần chạy chưa được kết nối để bạn tự phát triển.</p>
       </div>
     </main>
   );
