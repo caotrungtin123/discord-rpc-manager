@@ -55,6 +55,7 @@ function Landing() {
         </div>
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <span className="hidden items-center gap-2 sm:flex"><span className="size-2 animate-pulse rounded-full bg-success" /> Dịch vụ sẵn sàng</span>
+          <a href="https://discord.gg/P43rvQEQX" target="_blank" rel="noreferrer" className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card/60 px-4 text-sm font-semibold text-foreground backdrop-blur-xl transition hover:border-primary/40 hover:text-primary">Hỗ trợ</a>
           <Button variant="secondary" onClick={() => { window.location.href = "/api/public/auth/discord/start"; }}>Đăng nhập</Button>
         </div>
       </nav>
