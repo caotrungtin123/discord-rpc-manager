@@ -1,23 +1,21 @@
-function keyMaterial(): Uint8Array {
+function keyMaterial(): Uint8Array<ArrayBuffer> {
   const raw = process.env["TOKEN_ENC_KEY"];
   if (!raw) throw new Error("TOKEN_ENC_KEY missing");
+  const out = new Uint8Array(new ArrayBuffer(32));
   if (/^[0-9a-fA-F]{64}$/.test(raw)) {
-    const out = new Uint8Array(32);
     for (let i = 0; i < 32; i++) out[i] = parseInt(raw.slice(i * 2, i * 2 + 2), 16);
     return out;
   }
   // fall back: derive 32 bytes from an arbitrary string
   const bytes = new TextEncoder().encode(raw);
-  const out = new Uint8Array(32);
-  for (let i = 0; i < bytes.length; i++) out[i % 32] ^= bytes[i]!;
+  for (let i = 0; i < bytes.length; i++) {
+    out[i % 32] = (out[i % 32] ?? 0) ^ (bytes[i] ?? 0);
+  }
   return out;
 }
 
 async function getKey(): Promise<CryptoKey> {
-  return crypto.subtle.importKey("raw", keyMaterial(), "AES-GCM", false, [
-    "encrypt",
-    "decrypt",
-  ]);
+  return crypto.subtle.importKey("raw", keyMaterial(), "AES-GCM", false, ["encrypt", "decrypt"]);
 }
 
 function toB64(bytes: Uint8Array): string {
@@ -26,15 +24,15 @@ function toB64(bytes: Uint8Array): string {
   return btoa(s);
 }
 
-function fromB64(value: string): Uint8Array {
+function fromB64(value: string): Uint8Array<ArrayBuffer> {
   const bin = atob(value);
-  const out = new Uint8Array(bin.length);
+  const out = new Uint8Array(new ArrayBuffer(bin.length));
   for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
   return out;
 }
 
 export async function encryptToken(plain: string): Promise<string> {
-  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const iv = crypto.getRandomValues(new Uint8Array(new ArrayBuffer(12)));
   const key = await getKey();
   const cipher = new Uint8Array(
     await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(plain)),
