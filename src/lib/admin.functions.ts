@@ -66,9 +66,13 @@ export const adminUpdateProfile = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => profileUpdateSchema.parse(input))
   .handler(async ({ data, context }) => {
     await requireOwner(context);
-    const { userId, ...changes } = data;
+    const changes = {
+      ...(data.rpc_running === undefined ? {} : { rpc_running: data.rpc_running }),
+      ...(data.sync_mode === undefined ? {} : { sync_mode: data.sync_mode }),
+      ...(data.active_preset_id === undefined ? {} : { active_preset_id: data.active_preset_id }),
+    };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("profiles").update(changes).eq("id", userId);
+    const { error } = await supabaseAdmin.from("profiles").update(changes).eq("id", data.userId);
     if (error) throw new Error("Không cập nhật được người dùng");
     return { ok: true };
   });
