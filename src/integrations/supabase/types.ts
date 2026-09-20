@@ -93,6 +93,7 @@ export type Database = {
           created_at: string
           discord_id: string | null
           id: string
+          rpc_running: boolean
           runner_key: string
           sync_mode: boolean
           updated_at: string
@@ -104,6 +105,7 @@ export type Database = {
           created_at?: string
           discord_id?: string | null
           id: string
+          rpc_running?: boolean
           runner_key?: string
           sync_mode?: boolean
           updated_at?: string
@@ -115,6 +117,7 @@ export type Database = {
           created_at?: string
           discord_id?: string | null
           id?: string
+          rpc_running?: boolean
           runner_key?: string
           sync_mode?: boolean
           updated_at?: string

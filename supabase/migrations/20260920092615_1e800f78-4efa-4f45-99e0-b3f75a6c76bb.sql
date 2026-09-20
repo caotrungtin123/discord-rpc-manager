@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN rpc_running BOOLEAN NOT NULL DEFAULT false;
