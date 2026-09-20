@@ -7,14 +7,20 @@ import {
   Bot,
   CheckCircle2,
   CircleDot,
-  Clock3,
   Gamepad2,
   Headphones,
   Home,
   Layers3,
+  LifeBuoy,
+  LogOut,
+  Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Play,
   Plus,
   Radio,
-  ShieldCheck,
+  Square,
+  X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { addToken, regenerateRunnerKey } from "@/lib/rpc.functions";
@@ -77,6 +83,7 @@ type Profile = {
   sync_mode: boolean;
   active_preset_id: string | null;
   runner_key: string;
+  rpc_running: boolean;
 };
 
 type TokenRow = {
@@ -105,6 +112,8 @@ function Dashboard() {
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [newToken, setNewToken] = useState({ label: "", token: "" });
   const callAddToken = useServerFn(addToken);
   const callRegen = useServerFn(regenerateRunnerKey);
@@ -116,7 +125,7 @@ function Dashboard() {
 
     const { data: prof } = await supabase
       .from("profiles")
-      .select("id, username, avatar_url, sync_mode, active_preset_id, runner_key")
+      .select("id, username, avatar_url, sync_mode, active_preset_id, runner_key, rpc_running")
       .eq("id", uid)
       .maybeSingle();
 
@@ -224,6 +233,18 @@ function Dashboard() {
     if (error) toast.error(error.message);
   }
 
+  async function toggleRpc() {
+    if (!profile) return;
+    if (!profile.rpc_running && tokens.length === 0) {
+      toast.error("Hãy thêm ít nhất một token trước khi chạy RPC");
+      setView("rpc");
+      return;
+    }
+    const running = !profile.rpc_running;
+    await updateProfile({ rpc_running: running });
+    toast.success(running ? "Đã gửi lệnh chạy RPC tới host" : "Đã gửi lệnh dừng RPC tới host");
+  }
+
   async function handleAddToken() {
     if (!newToken.label.trim() || newToken.token.trim().length < 20) {
       toast.error("Nhập tên gợi nhớ và token hợp lệ");
@@ -265,59 +286,45 @@ function Dashboard() {
   const runnerCmd = `python runner.py --key ${profile.runner_key} --api ${typeof window !== "undefined" ? window.location.origin : ""}`;
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-sidebar/95 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 py-3 md:px-8">
-          <div className="flex items-center gap-3">
-            <div className="hidden size-9 items-center justify-center rounded-lg bg-primary sm:flex">
-              <Radio className="size-4 text-primary-foreground" />
-            </div>
-            <img
-              src={profile.avatar_url ?? "https://cdn.discordapp.com/embed/avatars/0.png"}
-              alt=""
-              className="h-10 w-10 rounded-full ring-2 ring-primary/30"
-            />
-            <div>
-              <p className="text-sm font-semibold">{profile.username ?? "Bạn"}</p>
-              <p className="text-xs text-muted-foreground">Binix Dashboard</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <a
-              href="https://discord.gg/binsito"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card/60 px-3.5 text-sm font-semibold text-foreground backdrop-blur-xl transition hover:border-primary/40 hover:text-primary"
-            >
-              Hỗ trợ
-            </a>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                window.location.href = "/";
-              }}
-            >
-              Đăng xuất
-            </Button>
-          </div>
+    <div className="flex min-h-screen bg-background">
+      {mobileNavOpen ? <button aria-label="Đóng menu" className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden" onClick={() => setMobileNavOpen(false)} /> : null}
+      <aside className={`${mobileNavOpen ? "flex" : "hidden"} fixed inset-y-0 left-0 z-50 w-64 flex-col border-r border-sidebar-border bg-sidebar p-4 md:sticky md:top-0 md:flex md:h-screen ${sidebarCollapsed ? "md:w-20" : "md:w-64"} transition-[width] duration-200`}>
+        <div className="flex h-12 items-center justify-between px-2">
+          <div className="flex items-center gap-3 overflow-hidden"><span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground"><Radio className="size-4" /></span>{!sidebarCollapsed ? <span className="font-display text-xl font-bold">Binix</span> : null}</div>
+          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileNavOpen(false)} aria-label="Đóng menu"><X /></Button>
         </div>
-        <nav className="mx-auto flex max-w-[1440px] gap-1 overflow-x-auto px-4 md:px-8" aria-label="Khu vực dashboard">
-          <DashboardNavButton active={view === "overview"} icon={Home} onClick={() => setView("overview")}>Tổng quan</DashboardNavButton>
-          <DashboardNavButton active={view === "rpc"} icon={Gamepad2} onClick={() => setView("rpc")}>Rich Presence</DashboardNavButton>
-          <DashboardNavButton active={view === "voice"} icon={Headphones} onClick={() => setView("voice")}>Treo Voice</DashboardNavButton>
-          <DashboardNavButton active={view === "status"} icon={CircleDot} onClick={() => setView("status")}>Status</DashboardNavButton>
-          <DashboardNavButton active={view === "quest"} icon={CheckCircle2} onClick={() => setView("quest")}>Auto Quest</DashboardNavButton>
+        <nav className="mt-7 flex-1 space-y-1" aria-label="Khu vực dashboard">
+          <DashboardNavButton compact={sidebarCollapsed} active={view === "overview"} icon={Home} onClick={() => { setView("overview"); setMobileNavOpen(false); }}>Tổng quan</DashboardNavButton>
+          <DashboardNavButton compact={sidebarCollapsed} active={view === "rpc"} icon={Gamepad2} onClick={() => { setView("rpc"); setMobileNavOpen(false); }}>Rich Presence</DashboardNavButton>
+          <DashboardNavButton compact={sidebarCollapsed} active={view === "voice"} icon={Headphones} onClick={() => { setView("voice"); setMobileNavOpen(false); }}>Treo Voice</DashboardNavButton>
+          <DashboardNavButton compact={sidebarCollapsed} active={view === "status"} icon={CircleDot} onClick={() => { setView("status"); setMobileNavOpen(false); }}>Status</DashboardNavButton>
+          <DashboardNavButton compact={sidebarCollapsed} active={view === "quest"} icon={CheckCircle2} onClick={() => { setView("quest"); setMobileNavOpen(false); }}>Auto Quest</DashboardNavButton>
         </nav>
-      </header>
+        <a href="https://discord.gg/binsito" target="_blank" rel="noreferrer" className={`mb-3 flex h-10 items-center rounded-lg px-3 text-sm font-semibold text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground ${sidebarCollapsed ? "justify-center" : "gap-3"}`} title="Hỗ trợ"><LifeBuoy className="size-4 shrink-0" />{!sidebarCollapsed ? "Hỗ trợ" : null}</a>
+        <div className={`flex items-center gap-3 border-t border-sidebar-border pt-4 ${sidebarCollapsed ? "justify-center" : ""}`}>
+          <img src={profile.avatar_url ?? "https://cdn.discordapp.com/embed/avatars/0.png"} alt="" className="size-9 shrink-0 rounded-full ring-2 ring-primary/25" />
+          {!sidebarCollapsed ? <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{profile.username ?? "Bạn"}</p><p className="text-xs text-muted-foreground">Discord đã kết nối</p></div> : null}
+        </div>
+      </aside>
+
+      <div className="min-w-0 flex-1">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/85 px-4 backdrop-blur-xl md:px-6">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileNavOpen(true)} aria-label="Mở menu"><Menu /></Button>
+            <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setSidebarCollapsed((value) => !value)} aria-label={sidebarCollapsed ? "Mở rộng menu" : "Thu gọn menu"}>{sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}</Button>
+            <div><p className="text-sm font-semibold">{view === "overview" ? "Không gian điều khiển" : view === "rpc" ? "Rich Presence" : view === "voice" ? "Treo Voice" : view === "status" ? "Status" : "Auto Quest"}</p><p className="hidden text-xs text-muted-foreground sm:block">Điều khiển dịch vụ Discord từ Binix</p></div>
+          </div>
+          <Button variant="secondary" size="sm" onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }}><LogOut /> <span className="hidden sm:inline">Đăng xuất</span></Button>
+        </header>
 
       {view === "overview" ? (
         <Overview
           username={profile.username ?? "Bạn"}
           rpcCount={tokens.filter((token) => token.enabled).length}
           tokenCount={tokens.length}
+          rpcRunning={profile.rpc_running}
           onOpen={setView}
+          onToggleRpc={toggleRpc}
         />
       ) : view === "voice" ? (
         <FeatureEmpty
@@ -341,13 +348,13 @@ function Dashboard() {
           icon={CheckCircle2}
         />
       ) : (
-      <main className="mx-auto grid max-w-[1440px] gap-6 px-4 py-6 md:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:py-8">
+      <main className="mx-auto grid max-w-[1320px] gap-6 px-4 py-6 md:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:py-8">
         <div className="flex flex-wrap items-start justify-between gap-4 lg:col-span-2">
           <div>
             <h1 className="text-3xl font-semibold">Rich Presence</h1>
             <p className="mt-2 text-sm text-muted-foreground">Thiết lập Rich Presence tùy chỉnh 24/7 cho từng tài khoản Discord.</p>
           </div>
-          <Button onClick={() => toast.info("Thêm token Discord tại khu vực Token bên dưới.")}><Plus />Thêm tài khoản</Button>
+          <div className="flex gap-2"><Button variant="secondary" onClick={() => toast.info("Thêm token Discord tại khu vực Token bên dưới.")}><Plus />Thêm tài khoản</Button><Button variant={profile.rpc_running ? "destructive" : "default"} onClick={toggleRpc}>{profile.rpc_running ? <Square /> : <Play />}{profile.rpc_running ? "Dừng RPC" : "Chạy RPC"}</Button></div>
         </div>
         <div className="space-y-5">
           {/* Mẫu RPC */}
@@ -637,10 +644,11 @@ function Dashboard() {
         </aside>
       </main>
       )}
-      <footer className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-2 border-t border-border px-5 py-5 text-xs text-muted-foreground sm:flex-row md:px-8">
+      <footer className="mx-auto flex max-w-[1320px] flex-col items-center justify-between gap-2 border-t border-border px-5 py-5 text-xs text-muted-foreground sm:flex-row md:px-8">
         <p>© {new Date().getFullYear()} Binix</p>
         <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
       </footer>
+      </div>
     </div>
   );
 }
@@ -649,21 +657,24 @@ function DashboardNavButton({
   active,
   icon: Icon,
   onClick,
+  compact,
   children,
 }: {
   active: boolean;
   icon: React.ComponentType<{ className?: string }>;
   onClick: () => void;
+  compact: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Button
       variant="ghost"
       onClick={onClick}
-      className={`h-11 shrink-0 rounded-none border-b-2 px-3 ${active ? "border-primary text-foreground" : "border-transparent text-muted-foreground"}`}
+      title={compact ? String(children) : undefined}
+      className={`h-11 w-full ${compact ? "justify-center px-0" : "justify-start px-3"} ${active ? "border border-primary/25 bg-primary/10 text-primary" : "border border-transparent text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"}`}
     >
       <Icon className="size-4" />
-      {children}
+      {!compact ? children : null}
     </Button>
   );
 }
@@ -672,21 +683,17 @@ function Overview({
   username,
   rpcCount,
   tokenCount,
+  rpcRunning,
   onOpen,
+  onToggleRpc,
 }: {
   username: string;
   rpcCount: number;
   tokenCount: number;
+  rpcRunning: boolean;
   onOpen: (view: DashboardView) => void;
+  onToggleRpc: () => void;
 }) {
-  const stats = [
-    { label: "RPC", value: rpcCount, detail: "đang chạy", icon: Activity, tone: "text-primary" },
-    { label: "Voice", value: 0, detail: "đang chạy", icon: Headphones, tone: "text-voice" },
-    { label: "Status", value: 0, detail: "đang chạy", icon: CircleDot, tone: "text-status" },
-    { label: "Auto Quest", value: 0, detail: "đang chạy", icon: CheckCircle2, tone: "text-quest" },
-    { label: "Online lâu nhất", value: "—", detail: "0 phiên", icon: Clock3, tone: "text-muted-foreground" },
-    { label: "Gói hiện tại", value: "Free", detail: "Gói miễn phí", icon: ShieldCheck, tone: "text-foreground" },
-  ];
   const shortcuts: Array<{ label: string; view: DashboardView; icon: React.ComponentType<{ className?: string }>; tone: string }> = [
     { label: "Rich Presence", view: "rpc", icon: Activity, tone: "text-primary" },
     { label: "Treo Voice", view: "voice", icon: Headphones, tone: "text-voice" },
@@ -695,50 +702,18 @@ function Overview({
   ];
 
   return (
-    <main className="mx-auto max-w-[1440px] px-4 py-8 md:px-8">
-      <div className="mb-7">
-        <h1 className="text-3xl font-semibold">Chào mừng trở lại, {username}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Theo dõi tất cả các phiên Discord đang hoạt động của bạn dưới đây.</p>
-      </div>
+    <main className="mx-auto max-w-[1320px] px-4 py-8 md:px-8">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase text-primary">Không gian của {username}</p><h1 className="mt-2 text-3xl font-semibold">Điều khiển Discord của bạn</h1><p className="mt-2 text-sm text-muted-foreground">Bật dịch vụ, đổi cấu hình và theo dõi mọi tài khoản tại một nơi.</p></div><Button variant={rpcRunning ? "destructive" : "default"} size="lg" onClick={onToggleRpc}>{rpcRunning ? <Square /> : <Play />}{rpcRunning ? "Dừng RPC" : "Chạy RPC"}</Button></div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {stats.map(({ label, value, detail, icon: Icon, tone }) => (
-          <div key={label} className="rounded-lg border border-border bg-card/55 p-4 transition-colors hover:bg-card">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold">{label}</p>
-              <span className="flex size-9 items-center justify-center rounded-full bg-surface-2"><Icon className={`size-4 ${tone}`} /></span>
-            </div>
-            <p className={`mt-4 text-2xl font-semibold ${tone}`}>{value}</p>
-            <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><span className="size-1.5 rounded-full bg-success" />{detail}</p>
-          </div>
-        ))}
-      </div>
+      <section className="overflow-hidden rounded-lg border border-border bg-card/60">
+        <div className="grid lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,0.7fr)]">
+          <div className="relative min-h-[300px] p-6 sm:p-8"><div className="absolute inset-y-0 left-0 w-1 bg-primary" /><div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${rpcRunning ? "bg-success shadow-[0_0_16px_var(--success)]" : "bg-muted-foreground"}`} /><span className="text-xs font-bold uppercase text-muted-foreground">{rpcRunning ? "Host đang nhận lệnh chạy" : "RPC đang dừng"}</span></div><p className="mt-12 max-w-xl text-4xl font-semibold sm:text-5xl">{rpcRunning ? `${rpcCount} tài khoản đang sẵn sàng hoạt động` : "Sẵn sàng phát Rich Presence"}</p><p className="mt-4 max-w-lg text-sm text-muted-foreground">Runner trên host tự nhận trạng thái của riêng tài khoản này. Mọi thay đổi đã lưu sẽ được áp dụng trong lần đồng bộ tiếp theo.</p><Button className="mt-8" variant="secondary" onClick={() => onOpen("rpc")}><Gamepad2 />Mở trình chỉnh RPC</Button></div>
+          <div className="border-t border-border bg-background/35 p-6 lg:border-l lg:border-t-0"><p className="text-xs font-bold uppercase text-muted-foreground">Dung lượng tài khoản</p><div className="mt-6 flex items-end justify-between"><span className="text-5xl font-semibold text-primary">{tokenCount}</span><span className="pb-1 text-sm text-muted-foreground">trên 5 token</span></div><div className="mt-5 flex gap-2">{Array.from({ length: 5 }, (_, index) => <span key={index} className={`h-2 flex-1 rounded-full ${index < tokenCount ? "bg-primary" : "bg-surface-2"}`} />)}</div><p className="mt-6 text-xs leading-5 text-muted-foreground">{rpcCount} token đang bật. Bạn có thể dùng chung một mẫu hoặc gán mẫu riêng cho từng token.</p></div>
+        </div>
+      </section>
 
-      <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
-        <section className="min-h-[440px] rounded-lg border border-border bg-card/45 p-5">
-          <div className="flex items-center justify-between"><h2 className="text-lg font-semibold">Phiên đang hoạt động</h2><span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-semibold text-primary">{rpcCount}</span></div>
-          <div className="flex min-h-[350px] flex-col items-center justify-center text-center">
-            <span className="flex size-12 items-center justify-center rounded-full border border-primary/50 text-primary"><Radio className="size-5" /></span>
-            <p className="mt-4 text-sm font-medium">{rpcCount ? `${rpcCount} phiên RPC đang được bật` : "Chưa có phiên nào hoạt động"}</p>
-            <p className="mt-2 text-xs text-muted-foreground">Chuyển sang Rich Presence, Voice, Status hoặc Auto Quest để bắt đầu.</p>
-          </div>
-        </section>
-        <aside className="rounded-lg border border-border bg-card/45 p-4">
-          <h2 className="text-xs font-bold uppercase">Phân bổ phiên</h2>
-          <div className="mt-4 space-y-4">
-            {shortcuts.map(({ label, tone }) => (
-              <div key={label}><div className="mb-2 flex justify-between text-xs"><span className={`font-semibold ${tone}`}>{label}</span><span className="text-muted-foreground">{label === "Rich Presence" ? rpcCount : 0}/5</span></div><div className="h-1.5 rounded-full bg-surface-2"><div className="h-full rounded-full bg-primary" style={{ width: label === "Rich Presence" ? `${Math.min(100, rpcCount * 20)}%` : "0%" }} /></div></div>
-            ))}
-          </div>
-          <div className="my-5 border-t border-border" />
-          <h2 className="text-xs font-bold uppercase">Truy cập nhanh</h2>
-          <div className="mt-3 space-y-2">
-            {shortcuts.map(({ label, view: target, icon: Icon, tone }) => (
-              <Button key={label} variant="secondary" onClick={() => onOpen(target)} className="h-11 w-full justify-start"><Icon className={`size-4 ${tone}`} />{label}</Button>
-            ))}
-          </div>
-          <p className="mt-4 text-center text-[11px] text-muted-foreground">{tokenCount} token đã thêm</p>
-        </aside>
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {shortcuts.map(({ label, view: target, icon: Icon, tone }, index) => <button key={label} onClick={() => onOpen(target)} className="group flex min-h-32 items-start justify-between rounded-lg border border-border bg-card/45 p-5 text-left transition hover:border-primary/35 hover:bg-card"><div><p className="text-xs text-muted-foreground">Kênh {String(index + 1).padStart(2, "0")}</p><p className="mt-5 font-semibold">{label}</p><p className="mt-1 text-xs text-muted-foreground">{label === "Rich Presence" ? `${rpcCount} token đang bật` : "Khung sẵn sàng"}</p></div><span className="flex size-10 items-center justify-center rounded-lg bg-surface-2 transition group-hover:bg-primary/15"><Icon className={`size-5 ${tone}`} /></span></button>)}
       </div>
     </main>
   );
