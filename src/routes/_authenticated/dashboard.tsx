@@ -234,6 +234,7 @@ function Dashboard() {
   }
 
   async function toggleRpc() {
+    if (!profile) return;
     if (!profile.rpc_running && tokens.length === 0) {
       toast.error("Hãy thêm ít nhất một token trước khi chạy RPC");
       setView("rpc");
