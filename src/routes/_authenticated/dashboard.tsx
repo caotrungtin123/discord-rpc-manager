@@ -352,7 +352,6 @@ function Dashboard() {
           <h1 className="mt-4 text-3xl font-semibold">Status</h1>
           <p className="mt-2 text-sm text-muted-foreground">Tính năng đang phát triển, sẽ sớm ra mắt.</p>
         </main>
-      )
       ) : view === "quest" ? (
         <FeatureEmpty
           title="Auto Quest"
