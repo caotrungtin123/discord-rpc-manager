@@ -5,6 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-display: "Outfit", sans-serif;
+  --font-sans: "Figtree", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -43,42 +45,42 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.18 0.015 275);
-  --foreground: oklch(0.95 0.005 275);
-  --surface: oklch(0.23 0.018 275);
-  --surface-2: oklch(0.27 0.02 275);
-  --card: oklch(0.23 0.018 275);
-  --card-foreground: oklch(0.95 0.005 275);
-  --popover: oklch(0.23 0.018 275);
-  --popover-foreground: oklch(0.95 0.005 275);
-  --primary: oklch(0.58 0.19 285);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.3 0.02 275);
-  --secondary-foreground: oklch(0.95 0.005 275);
-  --muted: oklch(0.28 0.018 275);
-  --muted-foreground: oklch(0.7 0.015 275);
-  --accent: oklch(0.32 0.03 285);
-  --accent-foreground: oklch(0.96 0.005 275);
+  --radius: 0.625rem;
+  --background: oklch(0.12 0.012 340);
+  --foreground: oklch(0.97 0.012 345);
+  --surface: oklch(0.18 0.025 340 / 0.78);
+  --surface-2: oklch(0.24 0.035 340 / 0.72);
+  --card: oklch(0.17 0.022 340 / 0.88);
+  --card-foreground: oklch(0.97 0.012 345);
+  --popover: oklch(0.17 0.022 340);
+  --popover-foreground: oklch(0.97 0.012 345);
+  --primary: oklch(0.68 0.24 350);
+  --primary-foreground: oklch(0.13 0.02 340);
+  --secondary: oklch(0.25 0.04 340);
+  --secondary-foreground: oklch(0.95 0.012 345);
+  --muted: oklch(0.22 0.025 340);
+  --muted-foreground: oklch(0.72 0.025 345);
+  --accent: oklch(0.33 0.1 345);
+  --accent-foreground: oklch(0.98 0.01 345);
   --destructive: oklch(0.6 0.2 22);
   --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.72 0.16 155);
-  --border: oklch(0.32 0.018 275);
-  --input: oklch(0.3 0.018 275);
-  --ring: oklch(0.58 0.19 285);
-  --sidebar: oklch(0.2 0.016 275);
-  --sidebar-foreground: oklch(0.95 0.005 275);
-  --sidebar-primary: oklch(0.58 0.19 285);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.27 0.02 275);
-  --sidebar-accent-foreground: oklch(0.95 0.005 275);
-  --sidebar-border: oklch(0.32 0.018 275);
-  --sidebar-ring: oklch(0.58 0.19 285);
+  --success: oklch(0.76 0.17 155);
+  --border: oklch(0.42 0.055 345 / 0.36);
+  --input: oklch(0.3 0.04 340 / 0.65);
+  --ring: oklch(0.68 0.24 350);
+  --sidebar: oklch(0.145 0.018 340 / 0.9);
+  --sidebar-foreground: oklch(0.97 0.012 345);
+  --sidebar-primary: oklch(0.68 0.24 350);
+  --sidebar-primary-foreground: oklch(0.13 0.02 340);
+  --sidebar-accent: oklch(0.25 0.04 340);
+  --sidebar-accent-foreground: oklch(0.97 0.012 345);
+  --sidebar-border: oklch(0.42 0.055 345 / 0.36);
+  --sidebar-ring: oklch(0.68 0.24 350);
 }
 
 .dark {
-  --background: oklch(0.18 0.015 275);
-  --foreground: oklch(0.95 0.005 275);
+  --background: oklch(0.12 0.012 340);
+  --foreground: oklch(0.97 0.012 345);
 }
 
 @layer base {
@@ -89,13 +91,33 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family:
-      "gg sans", "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
+    font-family: "Figtree", system-ui, sans-serif;
+    background-image:
+      radial-gradient(circle at 8% 0%, color-mix(in oklab, var(--primary) 16%, transparent), transparent 32rem),
+      radial-gradient(circle at 96% 100%, color-mix(in oklab, var(--accent) 26%, transparent), transparent 34rem);
+    background-attachment: fixed;
   }
+
+  h1, h2, h3 { font-family: "Outfit", sans-serif; }
+
+  ::selection { background: color-mix(in oklab, var(--primary) 35%, transparent); }
 }
 
 @utility glass-panel {
-  background-color: var(--color-surface);
+  background: color-mix(in oklab, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(24px) saturate(135%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
+  box-shadow: 0 24px 70px -36px color-mix(in oklab, var(--primary) 48%, transparent), inset 0 1px color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-rise-in { animation: rise-in 600ms cubic-bezier(.2,.8,.2,1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; }
 }

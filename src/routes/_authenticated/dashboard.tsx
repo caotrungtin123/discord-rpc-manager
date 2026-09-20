@@ -249,17 +249,17 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-sidebar">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <header className="sticky top-0 z-30 border-b border-border bg-sidebar/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
           <div className="flex items-center gap-3">
             <img
               src={profile.avatar_url ?? "https://cdn.discordapp.com/embed/avatars/0.png"}
               alt=""
-              className="h-9 w-9 rounded-full"
+              className="h-10 w-10 rounded-full ring-2 ring-primary/30"
             />
             <div>
               <p className="text-sm font-semibold">{profile.username ?? "Bạn"}</p>
-              <p className="text-xs text-muted-foreground">RPC Studio</p>
+              <p className="text-xs text-muted-foreground">Bảng điều khiển RPC</p>
             </div>
           </div>
           <Button
@@ -275,19 +275,19 @@ function Dashboard() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-6xl gap-8 px-6 py-8 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-6">
+      <main className="mx-auto grid max-w-7xl gap-6 px-5 py-6 md:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:py-8">
+        <div className="space-y-5">
           {/* Mẫu RPC */}
-          <section className="glass-panel p-5">
-            <div className="flex flex-wrap items-center gap-2">
+          <section className="glass-panel animate-rise-in p-5 sm:p-6">
+            <div className="flex flex-wrap items-center gap-2 border-b border-border pb-5">
               {presets.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setCurrentId(p.id)}
-                  className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
+                  className={`rounded-lg border px-3 py-2 text-sm font-semibold transition-all ${
                     p.id === current.id
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-surface-2 text-muted-foreground hover:text-foreground"
+                      ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                      : "border-border bg-surface-2/60 text-muted-foreground hover:bg-accent hover:text-foreground"
                   }`}
                 >
                   {p.name}
@@ -300,7 +300,7 @@ function Dashboard() {
               ) : null}
             </div>
 
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <Field label="Tên mẫu">
                 <Input value={current.name} onChange={(e) => patchCurrent({ name: e.target.value })} />
               </Field>
@@ -396,7 +396,7 @@ function Dashboard() {
               </div>
             </div>
 
-            <div className="mt-5 flex items-center gap-3">
+            <div className="mt-6 flex items-center gap-3">
               <Button onClick={savePreset} disabled={saving}>
                 {saving ? "Đang lưu…" : "Lưu mẫu này"}
               </Button>
@@ -405,11 +405,11 @@ function Dashboard() {
               </Button>
             </div>
 
-            <div className="mt-5 rounded-lg bg-surface-2 p-3">
+            <div className="mt-6 rounded-lg border border-border bg-background/30 p-4">
               <p className="text-xs font-semibold text-muted-foreground">Placeholder dùng được</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {PLACEHOLDER_HELP.map((h) => (
-                  <span key={h.key} className="rounded bg-background px-2 py-1 text-[11px]">
+                  <span key={h.key} className="rounded-md border border-border bg-background/50 px-2 py-1 text-[11px]">
                     <code>{h.key}</code> <span className="text-muted-foreground">{h.desc}</span>
                   </span>
                 ))}
@@ -418,7 +418,7 @@ function Dashboard() {
           </section>
 
           {/* Token */}
-          <section className="glass-panel p-5">
+          <section className="glass-panel animate-rise-in p-5 sm:p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Token ({tokens.length}/5)</h2>
               <div className="flex items-center gap-3">
@@ -459,7 +459,7 @@ function Dashboard() {
               {tokens.map((t) => (
                 <div
                   key={t.id}
-                  className="flex flex-wrap items-center gap-3 rounded-lg bg-surface-2 p-3"
+                  className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-background/30 p-3.5 transition-colors hover:bg-surface-2"
                 >
                   <Switch
                     checked={t.enabled}
@@ -515,13 +515,13 @@ function Dashboard() {
           </section>
 
           {/* Runner */}
-          <section className="glass-panel p-5">
+          <section className="glass-panel animate-rise-in p-5 sm:p-6">
             <h2 className="text-lg font-semibold">Kết nối máy chạy (runner)</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               Chạy lệnh này một lần trên host của bạn. Runner tự tải cấu hình mới mỗi 30 giây.
             </p>
             <div className="mt-3 flex items-center gap-2">
-              <code className="flex-1 overflow-x-auto rounded-lg bg-surface-2 p-3 text-xs">
+              <code className="flex-1 overflow-x-auto rounded-lg border border-border bg-background/50 p-3 text-xs text-muted-foreground">
                 {runnerCmd}
               </code>
               <Button
@@ -554,8 +554,8 @@ function Dashboard() {
           </section>
         </div>
 
-        <aside className="lg:sticky lg:top-8 lg:self-start">
-          <p className="mb-3 text-sm font-semibold text-muted-foreground">Xem trước</p>
+        <aside className="glass-panel animate-rise-in p-5 lg:sticky lg:top-24 lg:self-start [animation-delay:100ms]">
+          <p className="mb-4 flex items-center justify-between text-sm font-semibold text-foreground">Xem trước</p>
           <RpcPreview
             preset={current}
             username={profile.username ?? "Bạn"}
@@ -570,7 +570,7 @@ function Dashboard() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs text-muted-foreground">{label}</Label>
+      <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
       {children}
     </div>
   );
