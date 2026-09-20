@@ -4,6 +4,7 @@ import { ArrowRight, Layers3, Radio, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { RpcPreview } from "@/components/RpcPreview";
 import { Button } from "@/components/ui/button";
+import treoVoiceSample from "@/assets/treo-voice-sample.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
