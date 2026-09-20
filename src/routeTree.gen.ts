@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as ApiPublicRunnerConfigRouteImport } from './routes/api/public/runner/config'
+import { Route as ApiPublicRunnerQuestRouteImport } from './routes/api/public/runner/quest'
+import { Route as ApiPublicRunnerVoiceRouteImport } from './routes/api/public/runner/voice'
 import { Route as ApiPublicAuthDiscordCallbackRouteImport } from './routes/api/public/auth/discord/callback'
 import { Route as ApiPublicAuthDiscordStartRouteImport } from './routes/api/public/auth/discord/start'
 
@@ -41,6 +43,16 @@ const ApiPublicRunnerConfigRoute = ApiPublicRunnerConfigRouteImport.update({
   path: '/api/public/runner/config',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicRunnerQuestRoute = ApiPublicRunnerQuestRouteImport.update({
+  id: '/api/public/runner/quest',
+  path: '/api/public/runner/quest',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicRunnerVoiceRoute = ApiPublicRunnerVoiceRouteImport.update({
+  id: '/api/public/runner/voice',
+  path: '/api/public/runner/voice',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAuthDiscordCallbackRoute =
   ApiPublicAuthDiscordCallbackRouteImport.update({
     id: '/api/public/auth/discord/callback',
@@ -59,6 +71,8 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
+  '/api/public/runner/quest': typeof ApiPublicRunnerQuestRoute
+  '/api/public/runner/voice': typeof ApiPublicRunnerVoiceRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
   '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
@@ -67,6 +81,8 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
+  '/api/public/runner/quest': typeof ApiPublicRunnerQuestRoute
+  '/api/public/runner/voice': typeof ApiPublicRunnerVoiceRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
   '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
@@ -77,6 +93,8 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/api/public/runner/config': typeof ApiPublicRunnerConfigRoute
+  '/api/public/runner/quest': typeof ApiPublicRunnerQuestRoute
+  '/api/public/runner/voice': typeof ApiPublicRunnerVoiceRoute
   '/api/public/auth/discord/callback': typeof ApiPublicAuthDiscordCallbackRoute
   '/api/public/auth/discord/start': typeof ApiPublicAuthDiscordStartRoute
 }
@@ -87,6 +105,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/auth/callback'
     | '/api/public/runner/config'
+    | '/api/public/runner/quest'
+    | '/api/public/runner/voice'
     | '/api/public/auth/discord/callback'
     | '/api/public/auth/discord/start'
   fileRoutesByTo: FileRoutesByTo
@@ -95,6 +115,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/auth/callback'
     | '/api/public/runner/config'
+    | '/api/public/runner/quest'
+    | '/api/public/runner/voice'
     | '/api/public/auth/discord/callback'
     | '/api/public/auth/discord/start'
   id:
@@ -104,6 +126,8 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/auth/callback'
     | '/api/public/runner/config'
+    | '/api/public/runner/quest'
+    | '/api/public/runner/voice'
     | '/api/public/auth/discord/callback'
     | '/api/public/auth/discord/start'
   fileRoutesById: FileRoutesById
@@ -113,6 +137,8 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
   ApiPublicRunnerConfigRoute: typeof ApiPublicRunnerConfigRoute
+  ApiPublicRunnerQuestRoute: typeof ApiPublicRunnerQuestRoute
+  ApiPublicRunnerVoiceRoute: typeof ApiPublicRunnerVoiceRoute
   ApiPublicAuthDiscordCallbackRoute: typeof ApiPublicAuthDiscordCallbackRoute
   ApiPublicAuthDiscordStartRoute: typeof ApiPublicAuthDiscordStartRoute
 }
@@ -154,6 +180,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicRunnerConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/runner/quest': {
+      id: '/api/public/runner/quest'
+      path: '/api/public/runner/quest'
+      fullPath: '/api/public/runner/quest'
+      preLoaderRoute: typeof ApiPublicRunnerQuestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/runner/voice': {
+      id: '/api/public/runner/voice'
+      path: '/api/public/runner/voice'
+      fullPath: '/api/public/runner/voice'
+      preLoaderRoute: typeof ApiPublicRunnerVoiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/auth/discord/callback': {
       id: '/api/public/auth/discord/callback'
       path: '/api/public/auth/discord/callback'
@@ -187,6 +227,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,
   ApiPublicRunnerConfigRoute: ApiPublicRunnerConfigRoute,
+  ApiPublicRunnerQuestRoute: ApiPublicRunnerQuestRoute,
+  ApiPublicRunnerVoiceRoute: ApiPublicRunnerVoiceRoute,
   ApiPublicAuthDiscordCallbackRoute: ApiPublicAuthDiscordCallbackRoute,
   ApiPublicAuthDiscordStartRoute: ApiPublicAuthDiscordStartRoute,
 }

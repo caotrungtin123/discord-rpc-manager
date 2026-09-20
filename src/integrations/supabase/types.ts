@@ -136,6 +136,109 @@ export type Database = {
           },
         ]
       }
+      quest_items: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          game: string
+          id: string
+          job_id: string
+          name: string
+          progress: number
+          quest_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          game?: string
+          id?: string
+          job_id: string
+          name?: string
+          progress?: number
+          quest_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          game?: string
+          id?: string
+          job_id?: string
+          name?: string
+          progress?: number
+          quest_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quest_items_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "quest_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quest_jobs: {
+        Row: {
+          auto_run: boolean
+          created_at: string
+          id: string
+          label: string
+          last_run_at: string | null
+          last_scan_at: string | null
+          run_requested: boolean
+          scan_requested: boolean
+          status: string
+          token_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_run?: boolean
+          created_at?: string
+          id?: string
+          label?: string
+          last_run_at?: string | null
+          last_scan_at?: string | null
+          run_requested?: boolean
+          scan_requested?: boolean
+          status?: string
+          token_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_run?: boolean
+          created_at?: string
+          id?: string
+          label?: string
+          last_run_at?: string | null
+          last_scan_at?: string | null
+          run_requested?: boolean
+          scan_requested?: boolean
+          status?: string
+          token_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quest_jobs_token_id_fkey"
+            columns: ["token_id"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       token_secrets: {
         Row: {
           ciphertext: string
@@ -226,6 +329,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      voice_sessions: {
+        Row: {
+          camera_enabled: boolean
+          channel_id: string
+          created_at: string
+          guild_id: string
+          id: string
+          label: string
+          last_seen_at: string | null
+          mic_enabled: boolean
+          running: boolean
+          screen_share_enabled: boolean
+          status: string
+          token_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          camera_enabled?: boolean
+          channel_id?: string
+          created_at?: string
+          guild_id?: string
+          id?: string
+          label?: string
+          last_seen_at?: string | null
+          mic_enabled?: boolean
+          running?: boolean
+          screen_share_enabled?: boolean
+          status?: string
+          token_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          camera_enabled?: boolean
+          channel_id?: string
+          created_at?: string
+          guild_id?: string
+          id?: string
+          label?: string
+          last_seen_at?: string | null
+          mic_enabled?: boolean
+          running?: boolean
+          screen_share_enabled?: boolean
+          status?: string
+          token_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_sessions_token_id_fkey"
+            columns: ["token_id"]
+            isOneToOne: false
+            referencedRelation: "tokens"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
