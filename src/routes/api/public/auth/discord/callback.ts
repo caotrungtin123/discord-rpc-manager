@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { resolveOrigin } from "@/lib/origin";
 
 function errorPage(message: string) {
   return new Response(

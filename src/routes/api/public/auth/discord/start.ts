@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { resolveOrigin } from "@/lib/origin";
 
 export const Route = createFileRoute("/api/public/auth/discord/start")({
   server: {
@@ -8,7 +9,7 @@ export const Route = createFileRoute("/api/public/auth/discord/start")({
         if (!clientId) {
           return new Response("Chưa cấu hình DISCORD_CLIENT_ID", { status: 500 });
         }
-        const origin = new URL(request.url).origin;
+        const origin = resolveOrigin(request);
         const redirectUri = `${origin}/api/public/auth/discord/callback`;
         const state = crypto.randomUUID();
         const url = new URL("https://discord.com/oauth2/authorize");
