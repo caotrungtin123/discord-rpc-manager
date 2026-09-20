@@ -2,6 +2,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import {
+  Activity,
+  Bot,
+  CheckCircle2,
+  CircleDot,
+  Clock3,
+  Gamepad2,
+  Headphones,
+  Home,
+  Layers3,
+  Plus,
+  Radio,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { addToken, regenerateRunnerKey } from "@/lib/rpc.functions";
 import { RpcPreview } from "@/components/RpcPreview";
@@ -73,6 +88,8 @@ type TokenRow = {
   preset_id: string | null;
 };
 
+type DashboardView = "overview" | "rpc" | "voice" | "status" | "quest";
+
 const PLATFORMS = [
   { value: "desktop", label: "Máy tính (mặc định)" },
   { value: "meta_quest", label: "Meta Quest" },
@@ -82,6 +99,7 @@ const PLATFORMS = [
 ];
 
 function Dashboard() {
+  const [view, setView] = useState<DashboardView>("overview");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [presets, setPresets] = useState<Preset[]>([]);
   const [tokens, setTokens] = useState<TokenRow[]>([]);
@@ -249,9 +267,12 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-sidebar/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
+      <header className="sticky top-0 z-30 border-b border-border bg-sidebar/95 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 py-3 md:px-8">
           <div className="flex items-center gap-3">
+            <div className="hidden size-9 items-center justify-center rounded-lg bg-primary sm:flex">
+              <Radio className="size-4 text-primary-foreground" />
+            </div>
             <img
               src={profile.avatar_url ?? "https://cdn.discordapp.com/embed/avatars/0.png"}
               alt=""
@@ -259,7 +280,7 @@ function Dashboard() {
             />
             <div>
               <p className="text-sm font-semibold">{profile.username ?? "Bạn"}</p>
-              <p className="text-xs text-muted-foreground">Bảng điều khiển RPC</p>
+              <p className="text-xs text-muted-foreground">Binix Dashboard</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -283,9 +304,45 @@ function Dashboard() {
             </Button>
           </div>
         </div>
+        <nav className="mx-auto flex max-w-[1440px] gap-1 overflow-x-auto px-4 md:px-8" aria-label="Khu vực dashboard">
+          <DashboardNavButton active={view === "overview"} icon={Home} onClick={() => setView("overview")}>Tổng quan</DashboardNavButton>
+          <DashboardNavButton active={view === "rpc"} icon={Gamepad2} onClick={() => setView("rpc")}>Rich Presence</DashboardNavButton>
+          <DashboardNavButton active={view === "voice"} icon={Headphones} onClick={() => setView("voice")}>Treo Voice</DashboardNavButton>
+          <DashboardNavButton active={view === "status"} icon={CircleDot} onClick={() => setView("status")}>Status</DashboardNavButton>
+          <DashboardNavButton active={view === "quest"} icon={CheckCircle2} onClick={() => setView("quest")}>Auto Quest</DashboardNavButton>
+        </nav>
       </header>
 
-      <main className="mx-auto grid max-w-7xl gap-6 px-5 py-6 md:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:py-8">
+      {view === "overview" ? (
+        <Overview
+          username={profile.username ?? "Bạn"}
+          rpcCount={tokens.filter((token) => token.enabled).length}
+          tokenCount={tokens.length}
+          onOpen={setView}
+        />
+      ) : view === "voice" ? (
+        <FeatureEmpty
+          title="Treo Voice"
+          description="Treo tài khoản trong kênh voice Discord 24/7."
+          itemName="Voice"
+          icon={Headphones}
+        />
+      ) : view === "status" ? (
+        <FeatureEmpty
+          title="Status"
+          description="Đặt trạng thái Discord và Meta VR 24/7."
+          itemName="Status"
+          icon={CircleDot}
+        />
+      ) : view === "quest" ? (
+        <FeatureEmpty
+          title="Auto Quest"
+          description="Khu vực quản lý các tác vụ Discord Quest của bạn."
+          itemName="Auto Quest"
+          icon={CheckCircle2}
+        />
+      ) : (
+      <main className="mx-auto grid max-w-[1440px] gap-6 px-4 py-6 md:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:py-8">
         <div className="space-y-5">
           {/* Mẫu RPC */}
           <section className="glass-panel animate-rise-in p-5 sm:p-6">
@@ -573,11 +630,145 @@ function Dashboard() {
           />
         </aside>
       </main>
-      <footer className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 border-t border-border px-5 py-5 text-xs text-muted-foreground sm:flex-row md:px-8">
+      )}
+      <footer className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-2 border-t border-border px-5 py-5 text-xs text-muted-foreground sm:flex-row md:px-8">
         <p>© {new Date().getFullYear()} Binix</p>
         <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
       </footer>
     </div>
+  );
+}
+
+function DashboardNavButton({
+  active,
+  icon: Icon,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  icon: React.ComponentType<{ className?: string }>;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Button
+      variant="ghost"
+      onClick={onClick}
+      className={`h-11 shrink-0 rounded-none border-b-2 px-3 ${active ? "border-primary text-foreground" : "border-transparent text-muted-foreground"}`}
+    >
+      <Icon className="size-4" />
+      {children}
+    </Button>
+  );
+}
+
+function Overview({
+  username,
+  rpcCount,
+  tokenCount,
+  onOpen,
+}: {
+  username: string;
+  rpcCount: number;
+  tokenCount: number;
+  onOpen: (view: DashboardView) => void;
+}) {
+  const stats = [
+    { label: "RPC", value: rpcCount, detail: "đang chạy", icon: Activity, tone: "text-primary" },
+    { label: "Voice", value: 0, detail: "đang chạy", icon: Headphones, tone: "text-indigo-400" },
+    { label: "Status", value: 0, detail: "đang chạy", icon: CircleDot, tone: "text-amber-400" },
+    { label: "Auto Quest", value: 0, detail: "đang chạy", icon: CheckCircle2, tone: "text-emerald-400" },
+    { label: "Online lâu nhất", value: "—", detail: "0 phiên", icon: Clock3, tone: "text-muted-foreground" },
+    { label: "Gói hiện tại", value: "Free", detail: "Gói miễn phí", icon: ShieldCheck, tone: "text-foreground" },
+  ];
+  const shortcuts: Array<{ label: string; view: DashboardView; icon: React.ComponentType<{ className?: string }>; tone: string }> = [
+    { label: "Rich Presence", view: "rpc", icon: Activity, tone: "text-primary" },
+    { label: "Treo Voice", view: "voice", icon: Headphones, tone: "text-indigo-400" },
+    { label: "Status", view: "status", icon: CircleDot, tone: "text-amber-400" },
+    { label: "Auto Quest", view: "quest", icon: CheckCircle2, tone: "text-emerald-400" },
+  ];
+
+  return (
+    <main className="mx-auto max-w-[1440px] px-4 py-8 md:px-8">
+      <div className="mb-7">
+        <h1 className="text-3xl font-semibold">Chào mừng trở lại, {username} <span aria-hidden="true">👋</span></h1>
+        <p className="mt-2 text-sm text-muted-foreground">Theo dõi tất cả các phiên Discord đang hoạt động của bạn dưới đây.</p>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        {stats.map(({ label, value, detail, icon: Icon, tone }) => (
+          <div key={label} className="rounded-lg border border-border bg-card/55 p-4 transition-colors hover:bg-card">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold">{label}</p>
+              <span className="flex size-9 items-center justify-center rounded-full bg-surface-2"><Icon className={`size-4 ${tone}`} /></span>
+            </div>
+            <p className={`mt-4 text-2xl font-semibold ${tone}`}>{value}</p>
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><span className="size-1.5 rounded-full bg-success" />{detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <section className="min-h-[440px] rounded-lg border border-border bg-card/45 p-5">
+          <div className="flex items-center justify-between"><h2 className="text-lg font-semibold">Phiên đang hoạt động</h2><span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-semibold text-primary">{rpcCount}</span></div>
+          <div className="flex min-h-[350px] flex-col items-center justify-center text-center">
+            <span className="flex size-12 items-center justify-center rounded-full border border-primary/50 text-primary"><Radio className="size-5" /></span>
+            <p className="mt-4 text-sm font-medium">{rpcCount ? `${rpcCount} phiên RPC đang được bật` : "Chưa có phiên nào hoạt động"}</p>
+            <p className="mt-2 text-xs text-muted-foreground">Chuyển sang Rich Presence, Voice, Status hoặc Auto Quest để bắt đầu.</p>
+          </div>
+        </section>
+        <aside className="rounded-lg border border-border bg-card/45 p-4">
+          <h2 className="text-xs font-bold uppercase">Phân bổ phiên</h2>
+          <div className="mt-4 space-y-4">
+            {shortcuts.map(({ label, tone }) => (
+              <div key={label}><div className="mb-2 flex justify-between text-xs"><span className={`font-semibold ${tone}`}>{label}</span><span className="text-muted-foreground">{label === "Rich Presence" ? rpcCount : 0}/5</span></div><div className="h-1.5 rounded-full bg-surface-2"><div className="h-full rounded-full bg-primary" style={{ width: label === "Rich Presence" ? `${Math.min(100, rpcCount * 20)}%` : "0%" }} /></div></div>
+            ))}
+          </div>
+          <div className="my-5 border-t border-border" />
+          <h2 className="text-xs font-bold uppercase">Truy cập nhanh</h2>
+          <div className="mt-3 space-y-2">
+            {shortcuts.map(({ label, view: target, icon: Icon, tone }) => (
+              <Button key={label} variant="secondary" onClick={() => onOpen(target)} className="h-11 w-full justify-start"><Icon className={`size-4 ${tone}`} />{label}</Button>
+            ))}
+          </div>
+          <p className="mt-4 text-center text-[11px] text-muted-foreground">{tokenCount} token đã thêm</p>
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+function FeatureEmpty({
+  title,
+  description,
+  itemName,
+  icon: Icon,
+}: {
+  title: string;
+  description: string;
+  itemName: string;
+  icon: React.ComponentType<{ className?: string }>;
+}) {
+  return (
+    <main className="mx-auto min-h-[calc(100vh-190px)] max-w-[1280px] px-4 py-8 md:px-8">
+      <div className="flex flex-wrap items-start justify-between gap-5">
+        <div><h1 className="text-3xl font-semibold">{title}</h1><p className="mt-2 text-sm text-muted-foreground">{description}</p></div>
+        <Button onClick={() => toast.info(`${title} đã có khung sẵn để bạn tự kết nối phần chạy.`)}><Plus />Thêm tài khoản</Button>
+      </div>
+      <div className="mt-6 flex gap-2">
+        <Button size="sm"><Layers3 />Tất cả <span className="rounded-full bg-primary-foreground/15 px-1.5">0</span></Button>
+        <Button size="sm" variant="secondary">Không nhóm <span className="rounded-full bg-background/50 px-1.5">0</span></Button>
+      </div>
+      <div className="flex min-h-[430px] flex-col items-center justify-center text-center">
+        <Icon className="size-9 text-primary/65" />
+        <p className="mt-4 text-sm font-medium">Chưa có tài khoản {itemName} nào trong nhóm này</p>
+        <p className="mt-2 text-xs text-muted-foreground">Nhấn “Thêm tài khoản” để bắt đầu.</p>
+      </div>
+      <div className="mx-auto flex max-w-md items-center gap-3 rounded-lg border border-border bg-card/55 p-4 text-sm text-muted-foreground">
+        <Bot className="size-5 shrink-0 text-primary" />
+        <p><span className="font-semibold text-foreground">Khung giao diện đã sẵn sàng.</span> Phần chạy chưa được kết nối để bạn tự phát triển.</p>
+      </div>
+    </main>
   );
 }
 
