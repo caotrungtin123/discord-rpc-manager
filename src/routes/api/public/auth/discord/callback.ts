@@ -30,7 +30,7 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
           return errorPage("Chưa cấu hình Client ID / Client Secret của bot.");
         }
 
-        const redirectUri = `${url.origin}/api/public/auth/discord/callback`;
+        const redirectUri = `${resolveOrigin(request)}/api/public/auth/discord/callback`;
         const tokenRes = await fetch("https://discord.com/api/v10/oauth2/token", {
           method: "POST",
           headers: { "content-type": "application/x-www-form-urlencoded" },
