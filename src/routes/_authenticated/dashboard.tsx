@@ -347,12 +347,11 @@ function Dashboard() {
           icon={Headphones}
         />
       ) : view === "status" ? (
-        <FeatureEmpty
-          title="Status"
-          description="Đặt trạng thái Discord và Meta VR 24/7."
-          itemName="Status"
-          icon={CircleDot}
-        />
+        <main className="mx-auto flex min-h-[calc(100vh-190px)] max-w-[1280px] flex-col items-center justify-center px-4 py-8 text-center md:px-8">
+          <CircleDot className="size-10 text-status" />
+          <h1 className="mt-4 text-3xl font-semibold">Status</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Tính năng đang phát triển, sẽ sớm ra mắt.</p>
+        </main>
       ) : view === "quest" ? (
         <FeatureEmpty
           title="Auto Quest"
