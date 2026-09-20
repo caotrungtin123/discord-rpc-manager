@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { resolveOrigin } from "@/lib/origin";
 
 function errorPage(message: string) {
   return new Response(
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
           return errorPage("Chưa cấu hình Client ID / Client Secret của bot.");
         }
 
-        const redirectUri = `${url.origin}/api/public/auth/discord/callback`;
+        const redirectUri = `${resolveOrigin(request)}/api/public/auth/discord/callback`;
         const tokenRes = await fetch("https://discord.com/api/v10/oauth2/token", {
           method: "POST",
           headers: { "content-type": "application/x-www-form-urlencoded" },
@@ -98,7 +99,7 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
         const { data: link, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
           type: "magiclink",
           email,
-          options: { redirectTo: `${url.origin}/auth/callback` },
+          options: { redirectTo: `${resolveOrigin(request)}/auth/callback` },
         });
         if (linkError || !link?.properties?.action_link) {
           return errorPage("Không tạo được phiên đăng nhập.");
