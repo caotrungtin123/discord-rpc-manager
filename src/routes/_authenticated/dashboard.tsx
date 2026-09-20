@@ -19,11 +19,13 @@ import {
   Plus,
   Radio,
   Square,
+  ShieldCheck,
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { addToken } from "@/lib/rpc.functions";
 import { RpcPreview } from "@/components/RpcPreview";
+import { AdminDashboard } from "@/components/AdminDashboard";
 import { PLACEHOLDER_HELP } from "@/lib/placeholders";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,7 +96,7 @@ type TokenRow = {
   preset_id: string | null;
 };
 
-type DashboardView = "overview" | "rpc" | "voice" | "status" | "quest";
+type DashboardView = "overview" | "rpc" | "voice" | "status" | "quest" | "admin";
 
 const PLATFORMS = [
   { value: "desktop", label: "Máy tính (mặc định)" },
@@ -114,6 +116,7 @@ function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [newToken, setNewToken] = useState({ label: "", token: "" });
   const callAddToken = useServerFn(addToken);
 
@@ -157,9 +160,17 @@ function Dashboard() {
       .eq("user_id", uid)
       .order("position", { ascending: true });
 
+    const { data: ownerRole } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", uid)
+      .eq("role", "owner")
+      .maybeSingle();
+
     setProfile((prof as Profile) ?? null);
     setPresets((rows as Preset[]) ?? []);
     setTokens((tk as TokenRow[]) ?? []);
+    setIsOwner(Boolean(ownerRole));
     setCurrentId((prev) => prev ?? (rows?.[0]?.id ?? null));
     setLoading(false);
   }, []);
@@ -298,6 +309,7 @@ function Dashboard() {
           <DashboardNavButton compact={sidebarCollapsed} active={view === "voice"} icon={Headphones} onClick={() => { setView("voice"); setMobileNavOpen(false); }}>Treo Voice</DashboardNavButton>
           <DashboardNavButton compact={sidebarCollapsed} active={view === "status"} icon={CircleDot} onClick={() => { setView("status"); setMobileNavOpen(false); }}>Status</DashboardNavButton>
           <DashboardNavButton compact={sidebarCollapsed} active={view === "quest"} icon={CheckCircle2} onClick={() => { setView("quest"); setMobileNavOpen(false); }}>Auto Quest</DashboardNavButton>
+          {isOwner ? <div className="mt-5 border-t border-sidebar-border pt-4"><DashboardNavButton compact={sidebarCollapsed} active={view === "admin"} icon={ShieldCheck} onClick={() => { setView("admin"); setMobileNavOpen(false); }}>Quản trị</DashboardNavButton></div> : null}
         </nav>
         <a href="https://discord.gg/binsito" target="_blank" rel="noreferrer" className={`mb-3 flex h-10 items-center rounded-lg px-3 text-sm font-semibold text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground ${sidebarCollapsed ? "justify-center" : "gap-3"}`} title="Hỗ trợ"><LifeBuoy className="size-4 shrink-0" />{!sidebarCollapsed ? "Hỗ trợ" : null}</a>
         <div className={`flex items-center gap-3 border-t border-sidebar-border pt-4 ${sidebarCollapsed ? "justify-center" : ""}`}>
@@ -311,12 +323,14 @@ function Dashboard() {
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileNavOpen(true)} aria-label="Mở menu"><Menu /></Button>
             <Button variant="ghost" size="icon" className="hidden md:inline-flex" onClick={() => setSidebarCollapsed((value) => !value)} aria-label={sidebarCollapsed ? "Mở rộng menu" : "Thu gọn menu"}>{sidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}</Button>
-            <div><p className="text-sm font-semibold">{view === "overview" ? "Không gian điều khiển" : view === "rpc" ? "Rich Presence" : view === "voice" ? "Treo Voice" : view === "status" ? "Status" : "Auto Quest"}</p><p className="hidden text-xs text-muted-foreground sm:block">Điều khiển dịch vụ Discord từ Binix</p></div>
+            <div><p className="text-sm font-semibold">{view === "overview" ? "Không gian điều khiển" : view === "rpc" ? "Rich Presence" : view === "voice" ? "Treo Voice" : view === "status" ? "Status" : view === "quest" ? "Auto Quest" : "Quản trị"}</p><p className="hidden text-xs text-muted-foreground sm:block">Điều khiển dịch vụ Discord từ Binix</p></div>
           </div>
           <Button variant="secondary" size="sm" onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }}><LogOut /> <span className="hidden sm:inline">Đăng xuất</span></Button>
         </header>
 
-      {view === "overview" ? (
+      {view === "admin" && isOwner ? (
+        <AdminDashboard />
+      ) : view === "overview" ? (
         <Overview
           username={profile.username ?? "Bạn"}
           rpcCount={tokens.filter((token) => token.enabled).length}

@@ -111,7 +111,8 @@ async def main_async(args):
             await asyncio.sleep(args.interval)
             continue
 
-        entries = data.get("tokens") or []
+        is_running = bool(data.get("running"))
+        entries = (data.get("tokens") or []) if is_running else []
         seen = set()
         for entry in entries:
             token = entry.get("token")
@@ -137,7 +138,10 @@ async def main_async(args):
                 del workers[token]
 
         if not workers:
-            print(" [i] Chưa có token nào đang bật trên dashboard.")
+            if is_running:
+                print(" [i] Chưa có token nào đang bật trên dashboard.")
+            else:
+                print(" [i] RPC đang dừng theo lệnh từ dashboard.")
 
         await asyncio.sleep(args.interval)
 
