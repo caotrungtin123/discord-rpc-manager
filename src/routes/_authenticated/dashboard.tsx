@@ -23,7 +23,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { addToken, regenerateRunnerKey } from "@/lib/rpc.functions";
+import { addToken } from "@/lib/rpc.functions";
 import { RpcPreview } from "@/components/RpcPreview";
 import { PLACEHOLDER_HELP } from "@/lib/placeholders";
 import { Button } from "@/components/ui/button";
@@ -117,7 +117,6 @@ function Dashboard() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [newToken, setNewToken] = useState({ label: "", token: "" });
   const callAddToken = useServerFn(addToken);
-  const callRegen = useServerFn(regenerateRunnerKey);
 
   const load = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -285,8 +284,6 @@ function Dashboard() {
       </div>
     );
   }
-
-  const runnerCmd = `python runner.py --key ${profile.runner_key} --api ${typeof window !== "undefined" ? window.location.origin : ""}`;
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -607,44 +604,6 @@ function Dashboard() {
             ) : null}
           </section>
 
-          {/* Runner */}
-          <section className="glass-panel animate-rise-in p-5 sm:p-6">
-            <h2 className="text-lg font-semibold">Kết nối máy chạy (runner)</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Chạy lệnh này một lần trên host của bạn. Runner tự tải cấu hình mới mỗi 30 giây.
-            </p>
-            <div className="mt-3 flex items-center gap-2">
-              <code className="flex-1 overflow-x-auto rounded-lg border border-border bg-background/50 p-3 text-xs text-muted-foreground">
-                {runnerCmd}
-              </code>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  void navigator.clipboard.writeText(runnerCmd);
-                  toast.success("Đã sao chép");
-                }}
-              >
-                Sao chép
-              </Button>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-3"
-              onClick={async () => {
-                try {
-                  const res = await callRegen({});
-                  setProfile({ ...profile, runner_key: res.runner_key });
-                  toast.success("Đã tạo khoá mới");
-                } catch {
-                  toast.error("Không tạo được khoá mới");
-                }
-              }}
-            >
-              Tạo khoá mới
-            </Button>
-          </section>
         </div>
 
         <aside className="glass-panel animate-rise-in p-5 lg:sticky lg:top-24 lg:self-start [animation-delay:100ms]">

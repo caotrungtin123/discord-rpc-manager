@@ -40,9 +40,7 @@ function Landing() {
   const [checking, setChecking] = useState(true);
 
   const startDiscordLogin = () => {
-    const loginUrl = new URL("/api/public/auth/discord/start", window.location.origin);
-    loginUrl.searchParams.set("origin", window.location.origin);
-    (window.top ?? window).location.href = loginUrl.toString();
+    (window.top ?? window).location.href = "/api/public/auth/discord/start";
   };
 
   useEffect(() => {
