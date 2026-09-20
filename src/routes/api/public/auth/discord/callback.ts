@@ -18,7 +18,8 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
         const savedState = /rpc_oauth_state=([^;]+)/.exec(cookie)?.[1];
 
         if (!code) return errorPage("Thiếu mã xác thực từ Discord.");
-        if (!state || !savedState || state !== savedState) {
+        // Chỉ kiểm tra state khi có một trong hai — link mời tự tạo không có state.
+        if ((state || savedState) && state !== savedState) {
           return errorPage("Phiên đăng nhập không hợp lệ, hãy thử lại.");
         }
 
@@ -41,7 +42,10 @@ export const Route = createFileRoute("/api/public/auth/discord/callback")({
           }),
         });
         if (!tokenRes.ok) {
-          return errorPage("Discord từ chối mã xác thực. Kiểm tra lại Redirect URI trong bot.");
+          const detail = await tokenRes.text().catch(() => "");
+          return errorPage(
+            `Discord từ chối mã xác thực. Kiểm tra lại Redirect URI trong bot. (${tokenRes.status} ${detail.slice(0, 200)})`,
+          );
         }
         const tokenJson = (await tokenRes.json()) as { access_token?: string };
         if (!tokenJson.access_token) return errorPage("Không lấy được quyền truy cập từ Discord.");
