@@ -74,12 +74,6 @@ function Landing() {
             <Button size="lg" disabled={checking} onClick={() => { window.location.href = "/api/public/auth/discord/start"; }}>
               {checking ? "Đang kiểm tra…" : "Bắt đầu với Discord"}<ArrowRight />
             </Button>
-            <span className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="size-4 text-success" /> Chỉ yêu cầu quyền nhận diện</span>
-          </div>
-          <div className="mt-12 grid max-w-xl grid-cols-3 gap-4 border-t border-border pt-6">
-            {[['5', 'mẫu RPC'], ['5', 'tài khoản'], ['30s', 'đồng bộ']].map(([value, label]) => (
-              <div key={label}><p className="font-display text-2xl font-semibold">{value}</p><p className="text-xs text-muted-foreground">{label}</p></div>
-            ))}
           </div>
         </div>
 
@@ -91,10 +85,11 @@ function Landing() {
             </div>
             <RpcPreview preset={DEMO} username="Bạn" avatarUrl="https://cdn.discordapp.com/embed/avatars/0.png" />
           </div>
-          <div className="absolute -bottom-6 -left-6 hidden items-center gap-3 rounded-lg border border-border bg-card/90 px-4 py-3 shadow-xl backdrop-blur-xl sm:flex">
-            <Layers3 className="size-5 text-primary" /><div><p className="text-xs font-semibold">Đổi mẫu linh hoạt</p><p className="text-[11px] text-muted-foreground">Đồng bộ hoặc riêng từng tài khoản</p></div>
+          <div className="mx-auto mt-4 flex max-w-lg items-center gap-3 rounded-lg border border-border bg-card/70 px-4 py-3 backdrop-blur-xl">
+            <Layers3 className="size-5 shrink-0 text-primary" /><div><p className="text-xs font-semibold">Đổi mẫu linh hoạt</p><p className="text-[11px] text-muted-foreground">Đồng bộ hoặc riêng từng tài khoản</p></div>
           </div>
         </div>
+
       </section>
 
       <footer className="relative z-10 mx-auto max-w-7xl border-t border-border px-5 py-6 md:px-8">
