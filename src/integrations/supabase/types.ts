@@ -14,7 +14,192 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      presets: {
+        Row: {
+          activity_name: string
+          big_img: string
+          button_1_name: string
+          button_1_url: string
+          button_2_name: string
+          button_2_url: string
+          city: string
+          created_at: string
+          duration: number
+          elapsed: number
+          id: string
+          name: string
+          platform: string
+          position: number
+          small_img: string
+          spoof_device: boolean
+          text_1: string
+          text_2: string
+          text_3: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_name?: string
+          big_img?: string
+          button_1_name?: string
+          button_1_url?: string
+          button_2_name?: string
+          button_2_url?: string
+          city?: string
+          created_at?: string
+          duration?: number
+          elapsed?: number
+          id?: string
+          name?: string
+          platform?: string
+          position?: number
+          small_img?: string
+          spoof_device?: boolean
+          text_1?: string
+          text_2?: string
+          text_3?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_name?: string
+          big_img?: string
+          button_1_name?: string
+          button_1_url?: string
+          button_2_name?: string
+          button_2_url?: string
+          city?: string
+          created_at?: string
+          duration?: number
+          elapsed?: number
+          id?: string
+          name?: string
+          platform?: string
+          position?: number
+          small_img?: string
+          spoof_device?: boolean
+          text_1?: string
+          text_2?: string
+          text_3?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          active_preset_id: string | null
+          avatar_url: string | null
+          created_at: string
+          discord_id: string | null
+          id: string
+          runner_key: string
+          sync_mode: boolean
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          active_preset_id?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          discord_id?: string | null
+          id: string
+          runner_key?: string
+          sync_mode?: boolean
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          active_preset_id?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          discord_id?: string | null
+          id?: string
+          runner_key?: string
+          sync_mode?: boolean
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_active_preset_fk"
+            columns: ["active_preset_id"]
+            isOneToOne: false
+            referencedRelation: "presets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      token_secrets: {
+        Row: {
+          ciphertext: string
+          created_at: string
+          token_id: string
+        }
+        Insert: {
+          ciphertext: string
+          created_at?: string
+          token_id: string
+        }
+        Update: {
+          ciphertext?: string
+          created_at?: string
+          token_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "token_secrets_token_id_fkey"
+            columns: ["token_id"]
+            isOneToOne: true
+            referencedRelation: "tokens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tokens: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          label: string
+          masked: string
+          position: number
+          preset_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          label?: string
+          masked?: string
+          position?: number
+          preset_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          label?: string
+          masked?: string
+          position?: number
+          preset_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tokens_preset_id_fkey"
+            columns: ["preset_id"]
+            isOneToOne: false
+            referencedRelation: "presets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
