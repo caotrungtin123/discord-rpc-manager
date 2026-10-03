@@ -341,10 +341,6 @@ function Dashboard() {
           rpcCount={tokens.filter((token) => token.enabled).length}
           tokenCount={tokens.length}
           rpcRunning={profile.rpc_running}
-          runnerKey={profile.runner_key}
-          showRunnerKey={showRunnerKey}
-          onToggleShowKey={() => setShowRunnerKey((prev) => !prev)}
-          onRegenerateKey={regenerateKey}
           onOpen={setView}
           onToggleRpc={toggleRpc}
         />
@@ -677,10 +673,6 @@ function Overview({
   rpcCount,
   tokenCount,
   rpcRunning,
-  runnerKey,
-  showRunnerKey,
-  onToggleShowKey,
-  onRegenerateKey,
   onOpen,
   onToggleRpc,
 }: {
@@ -688,10 +680,6 @@ function Overview({
   rpcCount: number;
   tokenCount: number;
   rpcRunning: boolean;
-  runnerKey: string;
-  showRunnerKey: boolean;
-  onToggleShowKey: () => void;
-  onRegenerateKey: () => void;
   onOpen: (view: DashboardView) => void;
   onToggleRpc: () => void;
 }) {
