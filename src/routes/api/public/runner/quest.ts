@@ -5,7 +5,8 @@ import { authenticateRunner, jsonNoStore } from "@/lib/runner-auth.server";
  * GET  /api/public/runner/quest  -> các job quest cùng cờ scan_requested / run_requested
  * POST /api/public/runner/quest  -> runner gửi kết quả quét quest hoặc kết quả làm quest
  *
- * Xác thực: header `x-runner-key` (hoặc ?key=) = runner_key của user.
+ * Xác thực: Bearer token phiên đăng nhập của user (không cần khoá),
+ * hoặc header `x-runner-key` (hoặc ?key=) = runner_key cho bot chạy trên host riêng.
  *
  * POST body:
  * {
