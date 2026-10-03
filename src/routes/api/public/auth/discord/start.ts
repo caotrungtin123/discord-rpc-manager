@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 const DISCORD_CLIENT_ID = "1400551921541976086";
 const DISCORD_REDIRECT_URI =
-  "https://id-preview--975cea33-3cda-4ade-b8f3-0ef09798e71c.lovable.app/api/public/auth/discord/callback";
+  "https://binix.xyz/api/public/auth/discord/callback";
 
 export const Route = createFileRoute("/api/public/auth/discord/start")({
   server: {
