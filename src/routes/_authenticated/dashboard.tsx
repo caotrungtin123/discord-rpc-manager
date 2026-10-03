@@ -6,9 +6,13 @@ import {
   Activity,
   CheckCircle2,
   CircleDot,
+  Copy,
+  Eye,
+  EyeOff,
   Gamepad2,
   Headphones,
   Home,
+  KeyRound,
   Layers3,
   LifeBuoy,
   LogOut,
@@ -18,12 +22,13 @@ import {
   Play,
   Plus,
   Radio,
+  RefreshCw,
   Square,
   ShieldCheck,
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { addToken } from "@/lib/rpc.functions";
+import { addToken, regenerateRunnerKey } from "@/lib/rpc.functions";
 import { RpcPreview } from "@/components/RpcPreview";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import { PLACEHOLDER_HELP } from "@/lib/placeholders";
@@ -118,7 +123,19 @@ function Dashboard() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [newToken, setNewToken] = useState({ label: "", token: "" });
+  const [showRunnerKey, setShowRunnerKey] = useState(false);
   const callAddToken = useServerFn(addToken);
+  const callRegenerateKey = useServerFn(regenerateRunnerKey);
+
+  const regenerateKey = useCallback(async () => {
+    try {
+      const { runner_key } = await callRegenerateKey();
+      setProfile((prev) => (prev ? { ...prev, runner_key } : prev));
+      toast.success("Đã tạo khoá máy chạy mới — hãy cập nhật lại lệnh trên host.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Không tạo được khoá mới");
+    }
+  }, [callRegenerateKey]);
 
   const load = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -336,6 +353,10 @@ function Dashboard() {
           rpcCount={tokens.filter((token) => token.enabled).length}
           tokenCount={tokens.length}
           rpcRunning={profile.rpc_running}
+          runnerKey={profile.runner_key}
+          showRunnerKey={showRunnerKey}
+          onToggleShowKey={() => setShowRunnerKey((prev) => !prev)}
+          onRegenerateKey={regenerateKey}
           onOpen={setView}
           onToggleRpc={toggleRpc}
         />
