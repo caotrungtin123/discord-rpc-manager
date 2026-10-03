@@ -94,7 +94,7 @@ function Landing() {
           <div className="mx-auto mt-3 flex w-full max-w-lg items-center gap-3 rounded-lg border border-border bg-card/70 px-4 py-3 backdrop-blur-xl sm:max-w-xl">
             <Layers3 className="size-5 shrink-0 text-primary" /><div><p className="text-xs font-semibold">Đổi mẫu linh hoạt</p><p className="text-[11px] text-muted-foreground">Đồng bộ hoặc riêng từng tài khoản</p></div>
           </div>
-          <div className="mx-auto mt-3 max-w-md overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl">
+          <div className="mx-auto mt-3 w-full max-w-lg overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl sm:max-w-xl">
             <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
               <p className="text-xs font-semibold">Treo voice 24/7</p>
               <span className="rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">Ví dụ</span>
@@ -105,7 +105,7 @@ function Landing() {
 
       </section>
 
-      <footer className="relative z-10 mx-auto max-w-5xl border-t border-border px-5 py-5 md:px-8">
+      <footer className="relative z-10 mx-auto max-w-7xl border-t border-border px-5 py-5 md:px-8">
         <div className="flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
           <p>©{new Date().getFullYear()} Binix</p>
           <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
