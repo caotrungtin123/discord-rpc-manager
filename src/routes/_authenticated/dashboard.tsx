@@ -6,13 +6,9 @@ import {
   Activity,
   CheckCircle2,
   CircleDot,
-  Copy,
-  Eye,
-  EyeOff,
   Gamepad2,
   Headphones,
   Home,
-  KeyRound,
   Layers3,
   LifeBuoy,
   LogOut,
@@ -22,13 +18,12 @@ import {
   Play,
   Plus,
   Radio,
-  RefreshCw,
   Square,
   ShieldCheck,
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { addToken, regenerateRunnerKey } from "@/lib/rpc.functions";
+import { addToken } from "@/lib/rpc.functions";
 import { RpcPreview } from "@/components/RpcPreview";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import { PLACEHOLDER_HELP } from "@/lib/placeholders";
@@ -89,7 +84,6 @@ type Profile = {
   avatar_url: string | null;
   sync_mode: boolean;
   active_preset_id: string | null;
-  runner_key: string;
   rpc_running: boolean;
 };
 
@@ -132,7 +126,7 @@ function Dashboard() {
 
     const { data: prof } = await supabase
       .from("profiles")
-      .select("id, username, avatar_url, sync_mode, active_preset_id, runner_key, rpc_running")
+      .select("id, username, avatar_url, sync_mode, active_preset_id, rpc_running")
       .eq("id", uid)
       .maybeSingle();
 
