@@ -689,6 +689,10 @@ function Overview({
   rpcCount,
   tokenCount,
   rpcRunning,
+  runnerKey,
+  showRunnerKey,
+  onToggleShowKey,
+  onRegenerateKey,
   onOpen,
   onToggleRpc,
 }: {
@@ -696,6 +700,10 @@ function Overview({
   rpcCount: number;
   tokenCount: number;
   rpcRunning: boolean;
+  runnerKey: string;
+  showRunnerKey: boolean;
+  onToggleShowKey: () => void;
+  onRegenerateKey: () => void;
   onOpen: (view: DashboardView) => void;
   onToggleRpc: () => void;
 }) {
