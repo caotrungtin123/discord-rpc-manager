@@ -6,13 +6,9 @@ import {
   Activity,
   CheckCircle2,
   CircleDot,
-  Copy,
-  Eye,
-  EyeOff,
   Gamepad2,
   Headphones,
   Home,
-  KeyRound,
   Layers3,
   LifeBuoy,
   LogOut,
@@ -22,13 +18,12 @@ import {
   Play,
   Plus,
   Radio,
-  RefreshCw,
   Square,
   ShieldCheck,
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { addToken, regenerateRunnerKey } from "@/lib/rpc.functions";
+import { addToken } from "@/lib/rpc.functions";
 import { RpcPreview } from "@/components/RpcPreview";
 import { AdminDashboard } from "@/components/AdminDashboard";
 import { PLACEHOLDER_HELP } from "@/lib/placeholders";
@@ -89,7 +84,6 @@ type Profile = {
   avatar_url: string | null;
   sync_mode: boolean;
   active_preset_id: string | null;
-  runner_key: string;
   rpc_running: boolean;
 };
 
@@ -123,19 +117,7 @@ function Dashboard() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [newToken, setNewToken] = useState({ label: "", token: "" });
-  const [showRunnerKey, setShowRunnerKey] = useState(false);
   const callAddToken = useServerFn(addToken);
-  const callRegenerateKey = useServerFn(regenerateRunnerKey);
-
-  const regenerateKey = useCallback(async () => {
-    try {
-      const { runner_key } = await callRegenerateKey();
-      setProfile((prev) => (prev ? { ...prev, runner_key } : prev));
-      toast.success("Đã tạo khoá máy chạy mới — hãy cập nhật lại lệnh trên host.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Không tạo được khoá mới");
-    }
-  }, [callRegenerateKey]);
 
   const load = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -144,7 +126,7 @@ function Dashboard() {
 
     const { data: prof } = await supabase
       .from("profiles")
-      .select("id, username, avatar_url, sync_mode, active_preset_id, runner_key, rpc_running")
+      .select("id, username, avatar_url, sync_mode, active_preset_id, rpc_running")
       .eq("id", uid)
       .maybeSingle();
 
@@ -353,10 +335,6 @@ function Dashboard() {
           rpcCount={tokens.filter((token) => token.enabled).length}
           tokenCount={tokens.length}
           rpcRunning={profile.rpc_running}
-          runnerKey={profile.runner_key}
-          showRunnerKey={showRunnerKey}
-          onToggleShowKey={() => setShowRunnerKey((prev) => !prev)}
-          onRegenerateKey={regenerateKey}
           onOpen={setView}
           onToggleRpc={toggleRpc}
         />
@@ -689,10 +667,6 @@ function Overview({
   rpcCount,
   tokenCount,
   rpcRunning,
-  runnerKey,
-  showRunnerKey,
-  onToggleShowKey,
-  onRegenerateKey,
   onOpen,
   onToggleRpc,
 }: {
@@ -700,10 +674,6 @@ function Overview({
   rpcCount: number;
   tokenCount: number;
   rpcRunning: boolean;
-  runnerKey: string;
-  showRunnerKey: boolean;
-  onToggleShowKey: () => void;
-  onRegenerateKey: () => void;
   onOpen: (view: DashboardView) => void;
   onToggleRpc: () => void;
 }) {
@@ -720,25 +690,11 @@ function Overview({
 
       <section className="overflow-hidden rounded-lg border border-border bg-card/60">
         <div className="grid lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,0.7fr)]">
-          <div className="relative min-h-[300px] p-6 sm:p-8"><div className="absolute inset-y-0 left-0 w-1 bg-primary" /><div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${rpcRunning ? "bg-success shadow-[0_0_16px_var(--success)]" : "bg-muted-foreground"}`} /><span className="text-xs font-bold uppercase text-muted-foreground">{rpcRunning ? "Host đang nhận lệnh chạy" : "RPC đang dừng"}</span></div><p className="mt-12 max-w-xl text-4xl font-semibold sm:text-5xl">{rpcRunning ? `${rpcCount} tài khoản đang sẵn sàng hoạt động` : "Sẵn sàng phát Rich Presence"}</p><p className="mt-4 max-w-lg text-sm text-muted-foreground">Runner trên host tự nhận trạng thái của riêng tài khoản này. Mọi thay đổi đã lưu sẽ được áp dụng trong lần đồng bộ tiếp theo.</p><Button className="mt-8" variant="secondary" onClick={() => onOpen("rpc")}><Gamepad2 />Mở trình chỉnh RPC</Button></div>
+          <div className="relative min-h-[300px] p-6 sm:p-8"><div className="absolute inset-y-0 left-0 w-1 bg-primary" /><div className="flex items-center gap-3"><span className={`size-2.5 rounded-full ${rpcRunning ? "bg-success shadow-[0_0_16px_var(--success)]" : "bg-muted-foreground"}`} /><span className="text-xs font-bold uppercase text-muted-foreground">{rpcRunning ? "Host đang nhận lệnh chạy" : "RPC đang dừng"}</span></div><p className="mt-12 max-w-xl text-4xl font-semibold sm:text-5xl">{rpcRunning ? `${rpcCount} tài khoản đang sẵn sàng hoạt động` : "Sẵn sàng phát Rich Presence"}</p><p className="mt-4 max-w-lg text-sm text-muted-foreground">Hệ thống tự nhận trạng thái của riêng tài khoản này. Mọi thay đổi đã lưu sẽ được áp dụng trong lần đồng bộ tiếp theo.</p><Button className="mt-8" variant="secondary" onClick={() => onOpen("rpc")}><Gamepad2 />Mở trình chỉnh RPC</Button></div>
           <div className="border-t border-border bg-background/35 p-6 lg:border-l lg:border-t-0"><p className="text-xs font-bold uppercase text-muted-foreground">Dung lượng tài khoản</p><div className="mt-6 flex items-end justify-between"><span className="text-5xl font-semibold text-primary">{tokenCount}</span><span className="pb-1 text-sm text-muted-foreground">trên 5 token</span></div><div className="mt-5 flex gap-2">{Array.from({ length: 5 }, (_, index) => <span key={index} className={`h-2 flex-1 rounded-full ${index < tokenCount ? "bg-primary" : "bg-surface-2"}`} />)}</div><p className="mt-6 text-xs leading-5 text-muted-foreground">{rpcCount} token đang bật. Bạn có thể dùng chung một mẫu hoặc gán mẫu riêng cho từng token.</p></div>
         </div>
       </section>
 
-      <section className="mt-6 rounded-lg border border-border bg-card/60 p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-bold uppercase text-muted-foreground"><KeyRound className="size-3.5 text-primary" />Khóa máy chạy (runner)</p>
-            <p className="mt-1 text-xs text-muted-foreground">Dùng để chạy bot trên host của bạn: <code className="rounded bg-background/60 px-1.5 py-0.5 text-[11px]">python runner.py --key &lt;khoá&gt; --api &lt;địa chỉ web&gt;</code></p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <code className="min-w-56 rounded-md border border-border bg-background/50 px-3 py-2 font-mono text-sm">{showRunnerKey ? runnerKey : "•".repeat(Math.max(runnerKey.length, 24))}</code>
-            <Button size="sm" variant="secondary" onClick={onToggleShowKey}>{showRunnerKey ? <EyeOff /> : <Eye />}{showRunnerKey ? "Ẩn" : "Hiện"}</Button>
-            <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(runnerKey); toast.success("Đã sao chép khóa máy chạy."); }}><Copy />Sao chép</Button>
-            <Button size="sm" variant="destructive" onClick={() => { if (confirm("Tạo khóa mới? Khóa cũ trên host sẽ ngừng hoạt động.")) onRegenerateKey(); }}><RefreshCw />Tạo khoá mới</Button>
-          </div>
-        </div>
-      </section>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {shortcuts.map(({ label, view: target, icon: Icon, tone }, index) => <button key={label} onClick={() => onOpen(target)} className="group flex min-h-32 items-start justify-between rounded-lg border border-border bg-card/45 p-5 text-left transition hover:border-primary/35 hover:bg-card"><div><p className="text-xs text-muted-foreground">Kênh {String(index + 1).padStart(2, "0")}</p><p className="mt-5 font-semibold">{label}</p><p className="mt-1 text-xs text-muted-foreground">{label === "Rich Presence" ? `${rpcCount} token đang bật` : "Khung sẵn sàng"}</p></div><span className="flex size-10 items-center justify-center rounded-lg bg-surface-2 transition group-hover:bg-primary/15"><Icon className={`size-5 ${tone}`} /></span></button>)}
