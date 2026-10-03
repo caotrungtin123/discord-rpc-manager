@@ -53,7 +53,7 @@ function Landing() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-background">
       <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_bottom,black,transparent_78%)]" />
-      <nav className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-5 py-5 md:px-8">
+      <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/30"><Radio className="size-5 text-primary-foreground" /></div>
           <span className="font-display text-lg font-semibold">Binix</span>
@@ -65,15 +65,15 @@ function Landing() {
         </div>
       </nav>
 
-      <section className="relative z-10 mx-auto grid max-w-5xl items-center gap-10 px-5 pb-16 pt-10 md:px-8 lg:min-h-[640px] lg:grid-cols-[1.05fr_0.95fr] lg:pt-2">
+      <section className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-10 px-5 pb-16 pt-10 sm:px-8 md:gap-12 lg:min-h-[680px] lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:pt-2 xl:gap-20">
         <div className="animate-rise-in">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary sm:text-sm">
             <Sparkles className="size-3.5" /> Trình chỉnh RPC trực quan
           </div>
-          <h1 className="max-w-2xl font-display text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">
+          <h1 className="max-w-3xl font-display text-4xl font-semibold leading-[1.05] sm:text-6xl lg:text-7xl">
             Binix
           </h1>
-          <p className="mt-5 max-w-md text-sm leading-6 text-muted-foreground sm:text-base">
+          <p className="mt-5 max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
             Chỉnh sửa RPC và giữ Discord bạn online 24/24.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
