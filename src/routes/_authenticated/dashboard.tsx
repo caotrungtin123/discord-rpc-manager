@@ -123,19 +123,7 @@ function Dashboard() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [newToken, setNewToken] = useState({ label: "", token: "" });
-  const [showRunnerKey, setShowRunnerKey] = useState(false);
   const callAddToken = useServerFn(addToken);
-  const callRegenerateKey = useServerFn(regenerateRunnerKey);
-
-  const regenerateKey = useCallback(async () => {
-    try {
-      const { runner_key } = await callRegenerateKey();
-      setProfile((prev) => (prev ? { ...prev, runner_key } : prev));
-      toast.success("Đã tạo khoá máy chạy mới — hãy cập nhật lại lệnh trên host.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Không tạo được khoá mới");
-    }
-  }, [callRegenerateKey]);
 
   const load = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();
@@ -725,20 +713,6 @@ function Overview({
         </div>
       </section>
 
-      <section className="mt-6 rounded-lg border border-border bg-card/60 p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-bold uppercase text-muted-foreground"><KeyRound className="size-3.5 text-primary" />Khóa máy chạy (runner)</p>
-            <p className="mt-1 text-xs text-muted-foreground">Dùng để chạy bot trên host của bạn: <code className="rounded bg-background/60 px-1.5 py-0.5 text-[11px]">python runner.py --key &lt;khoá&gt; --api &lt;địa chỉ web&gt;</code></p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <code className="min-w-56 rounded-md border border-border bg-background/50 px-3 py-2 font-mono text-sm">{showRunnerKey ? runnerKey : "•".repeat(Math.max(runnerKey.length, 24))}</code>
-            <Button size="sm" variant="secondary" onClick={onToggleShowKey}>{showRunnerKey ? <EyeOff /> : <Eye />}{showRunnerKey ? "Ẩn" : "Hiện"}</Button>
-            <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(runnerKey); toast.success("Đã sao chép khóa máy chạy."); }}><Copy />Sao chép</Button>
-            <Button size="sm" variant="destructive" onClick={() => { if (confirm("Tạo khóa mới? Khóa cũ trên host sẽ ngừng hoạt động.")) onRegenerateKey(); }}><RefreshCw />Tạo khoá mới</Button>
-          </div>
-        </div>
-      </section>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {shortcuts.map(({ label, view: target, icon: Icon, tone }, index) => <button key={label} onClick={() => onOpen(target)} className="group flex min-h-32 items-start justify-between rounded-lg border border-border bg-card/45 p-5 text-left transition hover:border-primary/35 hover:bg-card"><div><p className="text-xs text-muted-foreground">Kênh {String(index + 1).padStart(2, "0")}</p><p className="mt-5 font-semibold">{label}</p><p className="mt-1 text-xs text-muted-foreground">{label === "Rich Presence" ? `${rpcCount} token đang bật` : "Khung sẵn sàng"}</p></div><span className="flex size-10 items-center justify-center rounded-lg bg-surface-2 transition group-hover:bg-primary/15"><Icon className={`size-5 ${tone}`} /></span></button>)}
