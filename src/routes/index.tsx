@@ -84,14 +84,14 @@ function Landing() {
         </div>
 
         <div className="relative animate-rise-in [animation-delay:120ms]">
-          <div className="glass-panel relative mx-auto max-w-md overflow-hidden p-3 sm:p-4">
+          <div className="glass-panel relative mx-auto w-full max-w-lg overflow-hidden p-3 sm:max-w-xl sm:p-4">
             <div className="mb-4 flex items-center justify-between px-1">
               <div><p className="text-sm font-semibold">Xem trước trực tiếp</p><p className="text-xs text-muted-foreground">Mọi thay đổi xuất hiện ngay lập tức</p></div>
               <div className="flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-2.5 py-1 text-[10px] font-semibold text-success"><span className="size-1.5 rounded-full bg-success" /> LIVE</div>
             </div>
             <RpcPreview preset={DEMO} username="Bạn" avatarUrl="https://cdn.discordapp.com/embed/avatars/0.png" />
           </div>
-          <div className="mx-auto mt-3 flex max-w-md items-center gap-3 rounded-lg border border-border bg-card/70 px-4 py-3 backdrop-blur-xl">
+          <div className="mx-auto mt-3 flex w-full max-w-lg items-center gap-3 rounded-lg border border-border bg-card/70 px-4 py-3 backdrop-blur-xl sm:max-w-xl">
             <Layers3 className="size-5 shrink-0 text-primary" /><div><p className="text-xs font-semibold">Đổi mẫu linh hoạt</p><p className="text-[11px] text-muted-foreground">Đồng bộ hoặc riêng từng tài khoản</p></div>
           </div>
           <div className="mx-auto mt-3 max-w-md overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl">
