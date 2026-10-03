@@ -5,7 +5,8 @@ import { authenticateRunner, jsonNoStore } from "@/lib/runner-auth.server";
  * GET  /api/public/runner/voice  -> danh sách phiên voice cần chạy (kèm token gốc)
  * POST /api/public/runner/voice  -> runner báo trạng thái phiên voice về web
  *
- * Xác thực: header `x-runner-key` (hoặc ?key=) = runner_key của user.
+ * Xác thực: Bearer token phiên đăng nhập của user (không cần khoá),
+ * hoặc header `x-runner-key` (hoặc ?key=) = runner_key cho bot chạy trên host riêng.
  */
 export const Route = createFileRoute("/api/public/runner/voice")({
   server: {
