@@ -53,7 +53,7 @@ function Landing() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-background">
       <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_bottom,black,transparent_78%)]" />
-      <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-6 md:px-8">
+      <nav className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-5 py-5 md:px-8">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/30"><Radio className="size-5 text-primary-foreground" /></div>
           <span className="font-display text-lg font-semibold">Binix</span>
@@ -65,15 +65,15 @@ function Landing() {
         </div>
       </nav>
 
-      <section className="relative z-10 mx-auto grid max-w-7xl items-center gap-14 px-5 pb-20 pt-12 md:px-8 lg:min-h-[760px] lg:grid-cols-[1.05fr_0.95fr] lg:pt-4">
+      <section className="relative z-10 mx-auto grid max-w-5xl items-center gap-10 px-5 pb-16 pt-10 md:px-8 lg:min-h-[640px] lg:grid-cols-[1.05fr_0.95fr] lg:pt-2">
         <div className="animate-rise-in">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
             <Sparkles className="size-3.5" /> Trình chỉnh RPC trực quan
           </div>
-          <h1 className="max-w-2xl font-display text-5xl font-semibold leading-[1.02] sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-2xl font-display text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">
             Binix
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
+          <p className="mt-5 max-w-md text-sm leading-6 text-muted-foreground sm:text-base">
             Chỉnh sửa RPC và giữ Discord bạn online 24/24.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -84,17 +84,17 @@ function Landing() {
         </div>
 
         <div className="relative animate-rise-in [animation-delay:120ms]">
-          <div className="glass-panel relative mx-auto max-w-lg overflow-hidden p-3 sm:p-5">
+          <div className="glass-panel relative mx-auto max-w-md overflow-hidden p-3 sm:p-4">
             <div className="mb-4 flex items-center justify-between px-1">
               <div><p className="text-sm font-semibold">Xem trước trực tiếp</p><p className="text-xs text-muted-foreground">Mọi thay đổi xuất hiện ngay lập tức</p></div>
               <div className="flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-2.5 py-1 text-[10px] font-semibold text-success"><span className="size-1.5 rounded-full bg-success" /> LIVE</div>
             </div>
             <RpcPreview preset={DEMO} username="Bạn" avatarUrl="https://cdn.discordapp.com/embed/avatars/0.png" />
           </div>
-          <div className="mx-auto mt-4 flex max-w-lg items-center gap-3 rounded-lg border border-border bg-card/70 px-4 py-3 backdrop-blur-xl">
+          <div className="mx-auto mt-3 flex max-w-md items-center gap-3 rounded-lg border border-border bg-card/70 px-4 py-3 backdrop-blur-xl">
             <Layers3 className="size-5 shrink-0 text-primary" /><div><p className="text-xs font-semibold">Đổi mẫu linh hoạt</p><p className="text-[11px] text-muted-foreground">Đồng bộ hoặc riêng từng tài khoản</p></div>
           </div>
-          <div className="mx-auto mt-4 max-w-lg overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl">
+          <div className="mx-auto mt-3 max-w-md overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl">
             <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
               <p className="text-xs font-semibold">Treo voice 24/7</p>
               <span className="rounded-full border border-success/20 bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">Ví dụ</span>
@@ -105,7 +105,7 @@ function Landing() {
 
       </section>
 
-      <footer className="relative z-10 mx-auto max-w-7xl border-t border-border px-5 py-6 md:px-8">
+      <footer className="relative z-10 mx-auto max-w-5xl border-t border-border px-5 py-5 md:px-8">
         <div className="flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground sm:flex-row">
           <p>©{new Date().getFullYear()} Binix</p>
           <p>Sở hữu & phát triển bởi <span className="font-semibold text-foreground">@nm6c</span> · <a href="https://discord.com" target="_blank" rel="noreferrer" className="font-semibold text-primary hover:underline">Discord</a></p>
